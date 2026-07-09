@@ -79,6 +79,7 @@ button { cursor: pointer; }
 .btn.teal { background: var(--teal); color: white; border-color: var(--teal); }
 .btn.ghost { background: transparent; }
 .btn.small { min-height: 32px; padding: 6px 10px; font-size: 13px; }
+.lang-toggle { min-width: 44px; }
 
 .hero {
   max-width: 1180px;
@@ -181,6 +182,11 @@ button { cursor: pointer; }
 .cta-band { background: #17202a; color: white; }
 .cta-band .section-lead { color: #c6d0dc; }
 .future-strip { border-top: 1px solid var(--line); }
+.mission-highlight {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #f8fcfb;
+}
 .auth-section { padding-top: 64px; }
 .auth-card {
   background: white;
@@ -232,6 +238,50 @@ button { cursor: pointer; }
   margin-top: 3px;
   font-size: 12px;
 }
+.form-share-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 520px);
+  gap: 16px;
+  align-items: center;
+}
+.share-box {
+  border: 1px solid var(--line);
+  background: #f7fafc;
+  border-radius: 8px;
+  padding: 13px;
+  color: var(--blue);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.mission-form-page .dash-grid { grid-template-columns: 1.05fr .95fr; }
+.signature-box {
+  margin-top: 16px;
+  border: 1px dashed #9fb4ce;
+  border-radius: 8px;
+  background: #fbfdff;
+  padding: 20px;
+}
+.signature-box span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+  margin-bottom: 8px;
+}
+.signature-box strong {
+  display: block;
+  font-size: 30px;
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  color: var(--ink);
+}
+.jotform-frame {
+  width: 100%;
+  min-height: 620px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+.mission-preview .stat-card strong { font-size: 20px; }
 
 .app-shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
 .employee-shell .sidebar { background: #fbfdff; }
@@ -449,7 +499,7 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
 @media (max-width: 920px) {
   .hero { grid-template-columns: 1fr; padding-top: 42px; }
   .hero-visual { min-height: 360px; }
-  .grid-2, .grid-3, .grid-4, .grid-5, .signup-flow, .stats, .dash-grid, .form-grid, .filter-bar { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4, .grid-5, .signup-flow, .stats, .dash-grid, .form-grid, .filter-bar, .form-share-panel, .mission-form-page .dash-grid { grid-template-columns: 1fr; }
   .app-shell { grid-template-columns: 1fr; }
   .sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
   .side-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }

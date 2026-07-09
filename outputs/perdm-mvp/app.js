@@ -6,6 +6,8 @@ const state = {
   allReviewed: false,
   signupCreated: false,
   employeeReceiptUploaded: false,
+  missionFormSubmitted: false,
+  lang: "ka",
 };
 
 const company = {
@@ -132,6 +134,14 @@ function setRoute(route) {
   window.location.hash = route;
 }
 
+function isKa() {
+  return state.lang === "ka";
+}
+
+function langToggle() {
+  return `<button class="btn small lang-toggle" onclick="state.lang=state.lang==='ka'?'en':'ka';render()">${state.lang === "ka" ? "EN" : "KA"}</button>`;
+}
+
 function badge(text) {
   const klass = text.includes("Ready") || text.includes("Approved") || text.includes("Attached") ? "green"
     : text.includes("Missing") || text.includes("Needs") || text.includes("Not ready") ? "red"
@@ -148,58 +158,68 @@ function topNav() {
   return `<header class="topnav"><div class="topnav-inner">
     ${brand()}
     <nav class="navlinks">
-      <a href="#problem">Problem</a>
-      <a href="#workflow">Workflow</a>
-      <a href="#benefits">Benefits</a>
-      <button class="btn small" onclick="setRoute('#/demo')">Demo</button>
-      <button class="btn small" onclick="setRoute('#/login')">Log in</button>
-      <button class="btn small primary" onclick="setRoute('#/signup')">Sign up</button>
+      <a href="#problem">${isKa() ? "პრობლემა" : "Problem"}</a>
+      <a href="#workflow">${isKa() ? "როგორ მუშაობს" : "Workflow"}</a>
+      <a href="#benefits">${isKa() ? "სარგებელი" : "Benefits"}</a>
+      <button class="btn small" onclick="setRoute('#/demo')">${isKa() ? "დემო" : "Demo"}</button>
+      <button class="btn small" onclick="setRoute('#/login')">${isKa() ? "შესვლა" : "Log in"}</button>
+      <button class="btn small primary" onclick="setRoute('#/signup')">${isKa() ? "რეგისტრაცია" : "Sign up"}</button>
+      ${langToggle()}
     </nav>
   </div></header>`;
 }
 
 function landing() {
+  const ka = isKa();
   return `<div class="page">${topNav()}
     <main>
       <section class="hero">
         <div>
-          <div class="eyebrow">Business travel expense documentation</div>
-          <h1>Business trip expenses, organized in one place</h1>
-          <p>perDM helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents.</p>
+          <div class="eyebrow">${ka ? "მივლინების დოკუმენტაცია და ხარჯების კონტროლი" : "Business travel expense documentation"}</div>
+          <h1>${ka ? "მივლინების ფორმები და ხარჯები ერთ სივრცეში" : "Business trip expenses, organized in one place"}</h1>
+          <p>${ka ? "perDM ეხმარება კომპანიებს თანამშრომლების მივლინების ფორმების, ხელმოწერების, ქვითრების, ხარჯებისა და ანგარიშების ერთ სისტემაში მართვაში." : "perDM helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents."}</p>
           <div class="hero-actions">
-            <button class="btn primary" onclick="setRoute('#/demo')">View demo</button>
-            <button class="btn" onclick="setRoute('#/signup')">Register company</button>
-            <button class="btn" onclick="setRoute('#/login')">Log in</button>
+            <button class="btn primary" onclick="setRoute('#/demo')">${ka ? "დემოს ნახვა" : "View demo"}</button>
+            <button class="btn" onclick="setRoute('#/signup')">${ka ? "კომპანიის რეგისტრაცია" : "Register company"}</button>
+            <button class="btn" onclick="setRoute('#/login')">${ka ? "შესვლა" : "Log in"}</button>
           </div>
         </div>
         <div class="hero-visual light-preview">
           <div class="preview-header">
-            <strong>Company and employee workspace</strong>
-            <button class="btn small primary">Invite employee</button>
+            <strong>${ka ? "კომპანიის და თანამშრომლის სამუშაო სივრცე" : "Company and employee workspace"}</strong>
+            <button class="btn small primary" onclick="setRoute('#/mission-form')">${ka ? "ფორმის ლინკი" : "Form link"}</button>
           </div>
           <div class="mini-grid">
-            ${mini("Company account", "Demo Company LLC")}
-            ${mini("Employees", "5 active users")}
-            ${mini("Assigned budget", "3,000 GEL")}
-            ${mini("Receipts", "18/20 attached")}
+            ${mini(ka ? "კომპანიის ანგარიში" : "Company account", "Demo Company LLC")}
+            ${mini(ka ? "თანამშრომლები" : "Employees", "5 active users")}
+            ${mini(ka ? "მივლინების ბიუჯეტი" : "Assigned budget", "3,000 GEL")}
+            ${mini(ka ? "მივლინების ფორმა" : "Mission form", state.missionFormSubmitted ? (ka ? "დადასტურებულია" : "Confirmed") : (ka ? "გასაგზავნია" : "To send"))}
           </div>
           <div class="preview-table">
-            ${previewRow("Company admin", "Sees every employee, trip, budget, and report", "All data", "Active")}
-            ${previewRow("Nino Beridze", "Employee portal", "250 GEL left", "Needs receipt")}
-            ${previewRow("Giorgi Kapanadze", "Employee portal", "185 GEL left", "Ready")}
-            ${previewRow("Accountant", "Approves expenses and exports reports", "Reports", "Active")}
+            ${previewRow(ka ? "დამსაქმებელი" : "Company admin", ka ? "ხედავს თანამშრომლებს, ფორმებს, ხარჯებს და ანგარიშებს" : "Sees every employee, trip, budget, and report", ka ? "ყველა მონაცემი" : "All data", ka ? "აქტიური" : "Active")}
+            ${previewRow("Nino Beridze", ka ? "თანამშრომლის პორტალი" : "Employee portal", "250 GEL left", ka ? "ფორმა შესავსებია" : "Form pending")}
+            ${previewRow(ka ? "მივლინების ფორმა" : "Mission form", ka ? "ლინკით ივსება და ხელმოწერით დასტურდება" : "Shared by link, signed and confirmed", ka ? "ლინკი" : "Link", state.missionFormSubmitted ? (ka ? "ჩაბარებულია" : "Submitted") : (ka ? "გასაგზავნია" : "Pending"))}
+            ${previewRow(ka ? "ბუღალტერი" : "Accountant", ka ? "ამოწმებს და აგენერირებს ანგარიშს" : "Approves expenses and exports reports", ka ? "ანგარიშები" : "Reports", ka ? "აქტიური" : "Active")}
           </div>
         </div>
       </section>
       <section class="band"><div class="section">
-        <h2>One system for the company and every travelling employee</h2>
-        <p class="section-lead">The company signs up, adds employees, assigns trips and budgets, and gives each employee a login. Employees see their own budget, expenses, missing receipts, and upload actions. The company sees the full picture across everyone.</p>
+        <h2>${ka ? "ერთი სისტემა კომპანიისთვის და თითოეული მივლინებული თანამშრომლისთვის" : "One system for the company and every travelling employee"}</h2>
+        <p class="section-lead">${ka ? "კომპანია რეგისტრირდება, ამატებს თანამშრომლებს, უგზავნის მივლინების ფორმის ლინკს, ხოლო თანამშრომელი ავსებს ფორმას, აწერს ხელს და ადასტურებს. დამსაქმებელი ყველაფერს ხედავს თავის პანელში." : "The company signs up, adds employees, assigns trips and budgets, and gives each employee a login. Employees see their own budget, expenses, missing receipts, and upload actions. The company sees the full picture across everyone."}</p>
         <div class="grid-3">
-          ${card(1, "Company registers", "The employer creates a perDM company account and sets basic accounting rules.")}
-          ${card(2, "Employees receive login", "Each employee gets access to their own trip, budget, receipt upload, and report status.")}
-          ${card(3, "Company sees everything", "Finance managers monitor all employees, expenses, receipts, approvals, and exports.")}
+          ${card(1, ka ? "კომპანია რეგისტრირდება" : "Company registers", ka ? "დამსაქმებელი ქმნის perDM-ის კომპანიის ანგარიშს და ამატებს თანამშრომლებს." : "The employer creates a perDM company account and sets basic accounting rules.")}
+          ${card(2, ka ? "თანამშრომელი იღებს ლინკს" : "Employees receive login", ka ? "თანამშრომელი ავსებს მივლინების ფორმას, აწერს ხელს და ადასტურებს." : "Each employee gets access to their own trip, budget, receipt upload, and report status.")}
+          ${card(3, ka ? "დამსაქმებელი ხედავს ყველაფერს" : "Company sees everything", ka ? "დამსაქმებელი ხედავს ფორმის სტატუსს, ხარჯებს, ქვითრებს და ანგარიშებს." : "Finance managers monitor all employees, expenses, receipts, approvals, and exports.")}
         </div>
       </div></section>
+      <section class="section mission-highlight">
+        <h2>${ka ? "მთავარი ფუნქცია: მივლინების ფორმა ლინკით" : "Core feature: shareable business trip form"}</h2>
+        <p class="section-lead">${ka ? "კომპანია თანამშრომელს უგზავნის უნიკალურ ლინკს. თანამშრომელი ავსებს ფორმას, ადასტურებს ხელმოწერით და ფორმა ავტომატურად ჩანს დამსაქმებლის dashboard-ში." : "The company sends a unique link to the employee. The employee fills the form, signs and confirms it, and the employer sees it inside the company dashboard."}</p>
+        <div class="hero-actions">
+          <button class="btn primary" onclick="setRoute('#/mission-form')">${ka ? "ფორმის გახსნა" : "Open form link"}</button>
+          <button class="btn" onclick="setRoute('#/dashboard/mission-forms')">${ka ? "დამსაქმებლის ხედვა" : "Employer view"}</button>
+        </div>
+      </section>
       <section class="section" id="problem">
         <h2>Business trip reporting is still too manual</h2>
         <p class="section-lead">One completed trip can leave finance teams with card statements, paper receipts, cash notes, email attachments, and Excel files to reconcile by hand.</p>
@@ -243,65 +263,68 @@ function step(icon, title) {
 }
 
 function demo() {
+  const ka = isKa();
   return `<div class="page">${topNav()}<section class="section">
-    <div class="title-row"><div><h1>perDM demo</h1><p>Choose the perspective you want to show: what the company sees, or what the employee sees.</p></div></div>
+    <div class="title-row"><div><h1>perDM demo</h1><p>${ka ? "აირჩიე რომელი ხედვა გინდა აჩვენო: კომპანიის თუ თანამშრომლის." : "Choose the perspective you want to show: what the company sees, or what the employee sees."}</p></div></div>
     <div class="grid-2 demo-choice-grid">
-      ${demoCard("Company view", "The company sees all employees, trips, budgets, card and cash expenses, missing receipts, approvals, and export-ready reports.", "#/dashboard", "Open company demo")}
-      ${demoCard("Employee view", "The employee sees only their assigned trip, remaining budget, personal expenses, missing receipt tasks, and report submission status.", "#/employee", "Open employee demo")}
+      ${demoCard(ka ? "კომპანიის ხედვა" : "Company view", ka ? "კომპანია ხედავს თანამშრომლებს, მივლინების ფორმებს, ბიუჯეტებს, ხარჯებს, ქვითრებს და ანგარიშებს." : "The company sees all employees, trips, budgets, card and cash expenses, missing receipts, approvals, and export-ready reports.", "#/dashboard", ka ? "კომპანიის დემო" : "Open company demo")}
+      ${demoCard(ka ? "თანამშრომლის ხედვა" : "Employee view", ka ? "თანამშრომელი ხედავს საკუთარ მივლინებას, ფორმას, ბიუჯეტს, ხარჯებს, ასატვირთ ქვითრებს და დადასტურების სტატუსს." : "The employee sees only their assigned trip, remaining budget, personal expenses, missing receipt tasks, and report submission status.", "#/employee", ka ? "თანამშრომლის დემო" : "Open employee demo")}
     </div>
     <section class="panel demo-compare">
-      <h3>How the two demos connect</h3>
+      <h3>${ka ? "როგორ უკავშირდება ორი დემო ერთმანეთს" : "How the two demos connect"}</h3>
       <div class="grid-2">
         <div>
-          <h4>Company / Finance Manager</h4>
-          <p class="section-lead">Adds employees, assigns budgets, monitors every business trip, checks receipts, approves expenses, and downloads reports.</p>
+          <h4>${ka ? "კომპანია / ფინანსისტი" : "Company / Finance Manager"}</h4>
+          <p class="section-lead">${ka ? "ამატებს თანამშრომლებს, უგზავნის ფორმის ლინკს, აკონტროლებს ხარჯებს, ამოწმებს ქვითრებს და ტვირთავს ანგარიშებს." : "Adds employees, assigns budgets, monitors every business trip, checks receipts, approves expenses, and downloads reports."}</p>
         </div>
         <div>
-          <h4>Employee</h4>
-          <p class="section-lead">Logs in separately, sees their own trip and budget, uploads missing receipts, and submits the trip file back to the company.</p>
+          <h4>${ka ? "თანამშრომელი" : "Employee"}</h4>
+          <p class="section-lead">${ka ? "შედის თავის პორტალში, ავსებს მივლინების ფორმას, აწერს ხელს, ტვირთავს ქვითრებს და აბარებს ინფორმაციას კომპანიას." : "Logs in separately, sees their own trip and budget, uploads missing receipts, and submits the trip file back to the company."}</p>
         </div>
       </div>
     </section>
     <div class="grid-3">
-      ${card(1, "Company registers", "The employer creates the workspace and adds employees.")}
-      ${card(2, "Employee gets login", "Each employee gets their own limited portal.")}
-      ${card(3, "Finance sees everything", "The company dashboard stays the source of truth for all reports.")}
+      ${card(1, ka ? "კომპანია რეგისტრირდება" : "Company registers", ka ? "დამსაქმებელი ქმნის სამუშაო სივრცეს და ამატებს თანამშრომლებს." : "The employer creates the workspace and adds employees.")}
+      ${card(2, ka ? "თანამშრომელი იღებს ლინკს" : "Employee gets login", ka ? "თანამშრომელი იღებს პორტალს და მივლინების ფორმის ლინკს." : "Each employee gets their own limited portal.")}
+      ${card(3, ka ? "ფინანსები ხედავს ყველაფერს" : "Finance sees everything", ka ? "კომპანიის dashboard რჩება ყველა ფორმის და ანგარიშის წყაროდ." : "The company dashboard stays the source of truth for all reports.")}
     </div>
   </section></div>`;
 }
 
 function loginPage() {
+  const ka = isKa();
   return `<div class="page">${topNav()}<section class="section auth-section">
     <div class="auth-card">
       <div>
-        <div class="eyebrow">Demo login</div>
-        <h1>Log in to perDM</h1>
-        <p class="section-lead">Choose how to enter the prototype. In the real product, companies create employee logins after registration.</p>
+        <div class="eyebrow">${ka ? "დემო შესვლა" : "Demo login"}</div>
+        <h1>${ka ? "perDM-ში შესვლა" : "Log in to perDM"}</h1>
+        <p class="section-lead">${ka ? "აირჩიე როგორ შედიხარ პროტოტიპში. რეალურ პროდუქტში კომპანია რეგისტრაციის შემდეგ ქმნის თანამშრომლების წვდომებს." : "Choose how to enter the prototype. In the real product, companies create employee logins after registration."}</p>
       </div>
       <div class="grid-2">
-        ${portalCard("Company / Finance Manager", "Manage employees, trips, budgets, expenses, receipts, approvals, and reports.", "#/dashboard", "Open company dashboard")}
-        ${portalCard("Employee", "View assigned budget, trip expenses, missing receipts, and upload documents.", "#/employee", "Open employee portal")}
+        ${portalCard(ka ? "კომპანია / ფინანსისტი" : "Company / Finance Manager", ka ? "მართავს თანამშრომლებს, მივლინებებს, ფორმებს, ბიუჯეტებს, ხარჯებს, ქვითრებს და ანგარიშებს." : "Manage employees, trips, budgets, expenses, receipts, approvals, and reports.", "#/dashboard", ka ? "კომპანიის პანელი" : "Open company dashboard")}
+        ${portalCard(ka ? "თანამშრომელი" : "Employee", ka ? "ხედავს საკუთარ მივლინებას, ბიუჯეტს, ფორმას, ხარჯებს და ასატვირთ დოკუმენტებს." : "View assigned budget, trip expenses, missing receipts, and upload documents.", "#/employee", ka ? "თანამშრომლის პორტალი" : "Open employee portal")}
       </div>
-      <p class="auth-note">Demo credentials are mocked for the prototype. No real authentication is connected yet.</p>
+      <p class="auth-note">${ka ? "დემო წვდომები mock-ია. რეალური ავტორიზაცია ჯერ არ არის ჩართული." : "Demo credentials are mocked for the prototype. No real authentication is connected yet."}</p>
     </div>
   </section></div>`;
 }
 
 function signupPage() {
+  const ka = isKa();
   return `<div class="page">${topNav()}<section class="section auth-section">
     <div class="auth-card">
       <div class="title-row">
         <div>
-          <div class="eyebrow">Company sign up</div>
-          <h1>Register your company</h1>
-          <p>Set up the employer account, add employees, and prepare employee logins for the travel expense workflow.</p>
+          <div class="eyebrow">${ka ? "კომპანიის რეგისტრაცია" : "Company sign up"}</div>
+          <h1>${ka ? "დაარეგისტრირე კომპანია" : "Register your company"}</h1>
+          <p>${ka ? "შექმენი დამსაქმებლის ანგარიში, დაამატე თანამშრომლები და მოამზადე მივლინების ფორმის ლინკები." : "Set up the employer account, add employees, and prepare employee logins for the travel expense workflow."}</p>
         </div>
-        <button class="btn" onclick="setRoute('#/login')">Already registered?</button>
+        <button class="btn" onclick="setRoute('#/login')">${ka ? "უკვე რეგისტრირებული ხარ?" : "Already registered?"}</button>
       </div>
-      ${state.signupCreated ? `<div class="trip-banner"><span>Company account created. Employee logins are ready for demo use.</span>${badge("Active")}</div>` : ""}
+      ${state.signupCreated ? `<div class="trip-banner"><span>${ka ? "კომპანიის ანგარიში შეიქმნა. თანამშრომლების demo წვდომები მზადაა." : "Company account created. Employee logins are ready for demo use."}</span>${badge(ka ? "აქტიური" : "Active")}</div>` : ""}
       <div class="dash-grid">
         <section class="panel">
-          <h3>Company details</h3>
+          <h3>${ka ? "კომპანიის მონაცემები" : "Company details"}</h3>
           <div class="form-grid">
             ${field("Company name", company.name)}
             ${field("Company identification number", company.id)}
@@ -310,10 +333,10 @@ function signupPage() {
             ${field("Default currency", "GEL", "select")}
             ${field("Receipt required above", "40 GEL")}
           </div>
-          <br><button class="btn primary" onclick="state.signupCreated=true;render()">Create company account</button>
+          <br><button class="btn primary" onclick="state.signupCreated=true;render()">${ka ? "კომპანიის ანგარიშის შექმნა" : "Create company account"}</button>
         </section>
         <section class="panel">
-          <h3>Add employees</h3>
+          <h3>${ka ? "თანამშრომლების დამატება" : "Add employees"}</h3>
           <div class="employee-invite-list">
             ${inviteRow("Nino Beridze", "Sales Manager", "nino@demo-company.ge", "Login ready")}
             ${inviteRow("Giorgi Kapanadze", "Field Specialist", "giorgi@demo-company.ge", "Login ready")}
@@ -326,7 +349,7 @@ function signupPage() {
             ${field("Position", "Marketing Coordinator")}
             ${field("Monthly travel budget", "700 GEL")}
           </div>
-          <br><button class="btn">Add employee</button>
+          <br><button class="btn">${ka ? "თანამშრომლის დამატება" : "Add employee"}</button>
         </section>
       </div>
       <div class="signup-flow">
@@ -353,6 +376,7 @@ function demoCard(title, copy, route, action = "Open demo") {
 
 const links = [
   ["overview", "Overview", "#/dashboard"],
+  ["missionForms", "Mission Forms", "#/dashboard/mission-forms"],
   ["trips", "Business Trips", "#/dashboard/trips"],
   ["employees", "Employees", "#/dashboard/employees"],
   ["expenses", "Expenses", "#/dashboard/expenses"],
@@ -369,7 +393,7 @@ function shell(active, content) {
       <nav class="side-nav">${links.map(([key, label, route]) => `<button class="side-link ${active === key ? "active" : ""}" onclick="setRoute('${route}')"><span>${sideIcon(label)}</span>${label}</button>`).join("")}</nav>
     </aside>
     <main class="main">
-      <div class="dash-top"><strong>Accountant dashboard</strong><div><button class="btn small" onclick="setRoute('#/demo')">Demo flows</button></div></div>
+      <div class="dash-top"><strong>${isKa() ? "დამსაქმებლის პანელი" : "Accountant dashboard"}</strong><div>${langToggle()} <button class="btn small" onclick="setRoute('#/demo')">${isKa() ? "დემოები" : "Demo flows"}</button></div></div>
       <div class="mobile-tabs">${links.map(([key, label, route]) => `<button class="side-link ${active === key ? "active" : ""}" onclick="setRoute('${route}')">${label}</button>`).join("")}</div>
       <div class="dash-content">${content}</div>
     </main>
@@ -377,26 +401,43 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "Mission Forms": "✎", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
 function dashboard() {
   const t = nino();
-  return shell("overview", `${title("Overview", "Everything related to a business trip is collected in one place.", `<button class="btn primary" onclick="setRoute('#/dashboard/trips/nino-batumi')">Open Nino's trip</button>`)}
+  return shell("overview", `${title(isKa() ? "მიმოხილვა" : "Overview", isKa() ? "მივლინების ფორმები, ხარჯები და ანგარიშები ერთ სივრცეშია." : "Everything related to a business trip is collected in one place.", `<button class="btn primary" onclick="setRoute('#/dashboard/mission-forms')">${isKa() ? "მივლინების ფორმები" : "Mission forms"}</button>`)}
     <div class="stats">
+      ${stat(isKa() ? "მივლინების ფორმები" : "Mission forms", state.missionFormSubmitted ? "1" : "0", state.missionFormSubmitted ? (isKa() ? "დადასტურებული" : "Confirmed") : (isKa() ? "ელოდება შევსებას" : "Waiting for employee"))}
       ${stat("Active business trips", "4", "2 end this week")}
       ${stat("Completed trips waiting for report", "3", "Nino needs review")}
       ${stat("Expenses this month", money(8420), "Card and cash combined")}
       ${stat("Missing receipts", `${t.missing + 1}`, "Across all trips")}
       ${stat("Pending approvals", `${t.pending + 3}`, "Need accountant review")}
-      ${stat("Reports ready to export", "1", "Kutaisi field visit")}
     </div>
     <div class="dash-grid">
-      <section class="panel"><h3>Trips requiring attention</h3>${attention("Nino Beridze", "Batumi business trip", `${t.missing} missing receipts`, "#/dashboard/trips/nino-batumi")}${attention("Giorgi Kapanadze", "Kutaisi field visit", "Ready for export", "#/dashboard/trips")}${attention("Mariam Lomidze", "Telavi partner meeting", "3 pending approvals", "#/dashboard/trips")}</section>
+      <section class="panel"><h3>${isKa() ? "ყურადღებას საჭიროებს" : "Items requiring attention"}</h3>${attention("Nino Beridze", isKa() ? "მივლინების ფორმა" : "Mission form", state.missionFormSubmitted ? (isKa() ? "დადასტურებულია" : "Confirmed") : (isKa() ? "გასაგზავნია / შესავსებია" : "Pending employee confirmation"), "#/dashboard/mission-forms")}${attention("Nino Beridze", "Batumi business trip", `${t.missing} missing receipts`, "#/dashboard/trips/nino-batumi")}${attention("Giorgi Kapanadze", "Kutaisi field visit", "Ready for export", "#/dashboard/trips")}</section>
       <section class="panel"><h3>Expenses by category</h3><div class="donut"></div><p class="section-lead">Hotel, meals, fuel, transport, and other expenses grouped for finance review.</p></section>
     </div>
     <section class="panel" style="margin-top:16px"><h3>Monthly business trip expenses</h3><div class="bar-chart">${[38, 54, 42, 71, 63, 84].map((h, i) => `<div class="bar" style="height:${h}%"><span>${["Jan","Feb","Mar","Apr","May","Jun"][i]}</span></div>`).join("")}</div></section>`);
+}
+
+function missionFormsPage() {
+  return shell("missionForms", `${title(isKa() ? "მივლინების ფორმები" : "Mission forms", isKa() ? "დამსაქმებელი ხედავს თანამშრომლის მიერ ლინკით შევსებულ და ხელმოწერით დადასტურებულ ფორმებს." : "The employer sees business trip forms submitted and signed by employees through a shared link.", `<button class="btn primary" onclick="setRoute('#/mission-form')">${isKa() ? "თანამშრომლის ლინკის გახსნა" : "Open employee link"}</button>`)}
+    <section class="panel form-share-panel">
+      <div>
+        <h3>${isKa() ? "გასაზიარებელი ლინკი თანამშრომლისთვის" : "Shareable employee form link"}</h3>
+        <p class="section-lead">${isKa() ? "ეს ლინკი ეგზავნება თანამშრომელს. თანამშრომელი ავსებს, ხელს აწერს და ადასტურებს." : "Send this link to the employee. They fill it, sign it, and confirm the form."}</p>
+      </div>
+      <div class="share-box">https://georgegasto909.github.io/perDM/outputs/perdm-mvp/#/mission-form</div>
+    </section>
+    <section class="panel table-wrap" style="margin-top:16px">
+      <table><thead><tr><th>${isKa() ? "თანამშრომელი" : "Employee"}</th><th>${isKa() ? "ფორმა" : "Form"}</th><th>${isKa() ? "დანიშნულება" : "Destination"}</th><th>${isKa() ? "სტატუსი" : "Status"}</th><th>${isKa() ? "ხელმოწერა" : "Signature"}</th><th>${isKa() ? "ქმედება" : "Action"}</th></tr></thead><tbody>
+        <tr><td><strong>ნინო ბერიძე</strong><small class="table-sub">nino@demo-company.ge</small></td><td>${isKa() ? "მივლინების ფორმა" : "Business trip form"}</td><td>Batumi</td><td>${badge(state.missionFormSubmitted ? (isKa() ? "დადასტურებულია" : "Confirmed") : (isKa() ? "ელოდება თანამშრომელს" : "Waiting for employee"))}</td><td>${state.missionFormSubmitted ? "Nino Beridze" : "-"}</td><td><button class="btn small" onclick="setRoute('#/mission-form')">${isKa() ? "ფორმის ნახვა" : "View form"}</button></td></tr>
+      </tbody></table>
+    </section>
+    ${state.missionFormSubmitted ? missionFormPreview() : `<section class="empty" style="margin-top:16px">${isKa() ? "ფორმა ჯერ არ არის დადასტურებული. თანამშრომლის დადასტურების შემდეგ აქ გამოჩნდება შევსებული ვერსია." : "The form is not confirmed yet. Once the employee submits it, the completed version appears here."}</section>`}`);
 }
 
 function attention(name, trip, note, route) {
@@ -574,6 +615,7 @@ function futurePage() {
 
 const employeeLinks = [
   ["overview", "My Overview", "#/employee"],
+  ["missionForm", "Mission Form", "#/mission-form"],
   ["trip", "My Trip", "#/employee/trip"],
   ["expenses", "My Expenses", "#/employee/expenses"],
   ["receipts", "Upload Receipts", "#/employee/receipts"],
@@ -587,7 +629,7 @@ function employeeShell(active, content) {
       <nav class="side-nav">${employeeLinks.map(([key, label, route]) => `<button class="side-link ${active === key ? "active" : ""}" onclick="setRoute('${route}')"><span>${sideIcon(label)}</span>${label}</button>`).join("")}</nav>
     </aside>
     <main class="main">
-      <div class="dash-top"><strong>Employee portal · Nino Beridze</strong><div><button class="btn small" onclick="setRoute('#/login')">Switch login</button></div></div>
+      <div class="dash-top"><strong>${isKa() ? "თანამშრომლის პორტალი · ნინო ბერიძე" : "Employee portal · Nino Beridze"}</strong><div>${langToggle()} <button class="btn small" onclick="setRoute('#/login')">${isKa() ? "შესვლის შეცვლა" : "Switch login"}</button></div></div>
       <div class="mobile-tabs">${employeeLinks.map(([key, label, route]) => `<button class="side-link ${active === key ? "active" : ""}" onclick="setRoute('${route}')">${label}</button>`).join("")}</div>
       <div class="dash-content">${content}</div>
     </main>
@@ -607,28 +649,83 @@ function employeePortal(view = "overview") {
 
 function employeeOverview() {
   const t = nino();
-  return `${title("My travel workspace", "Your company assigned this trip, budget, expenses, and receipt tasks to your employee account.")}
+  return `${title(isKa() ? "ჩემი მივლინების სივრცე" : "My travel workspace", isKa() ? "კომპანიამ ამ ანგარიშზე მოგანიჭა მივლინების ფორმა, ბიუჯეტი, ხარჯები და ქვითრების დავალებები." : "Your company assigned this trip, budget, expenses, and receipt tasks to your employee account.")}
     <div class="stats">
+      ${stat(isKa() ? "ფორმის სტატუსი" : "Form status", state.missionFormSubmitted ? (isKa() ? "დადასტურებულია" : "Confirmed") : (isKa() ? "შესავსებია" : "To complete"), isKa() ? "ხელმოწერა სავალდებულოა" : "Signature required")}
       ${stat("Assigned budget", money(t.budget), "Batumi business trip")}
       ${stat("Spent", money(t.total), "Card + cash")}
       ${stat("Remaining", money(t.budget - t.total), "Available budget")}
       ${stat("Receipts to upload", String(t.missing), "Required before report")}
       ${stat("Pending review", String(t.pending), "Finance will approve")}
-      ${stat("Report status", t.report, "Company can monitor")}
     </div>
     <div class="dash-grid">
       <section class="panel">
-        <h3>What you need to do</h3>
+        <h3>${isKa() ? "შენი დავალებები" : "What you need to do"}</h3>
+        ${attention(isKa() ? "მივლინების ფორმის შევსება" : "Complete mission form", isKa() ? "ფორმა უნდა შეივსოს და დადასტურდეს ხელმოწერით" : "Fill and confirm the form with signature", state.missionFormSubmitted ? (isKa() ? "შესრულებულია" : "Done") : (isKa() ? "სავალდებულო" : "Required"), "#/mission-form")}
         ${attention("Upload missing receipt", "Taxi - 35 GEL, June 3", state.receiptAttached ? "Done" : "Needs receipt", "#/employee/receipts")}
         ${attention("Check expense list", "Confirm card and cash payments are correct", "Open", "#/employee/expenses")}
         ${attention("Submit trip report", "Send completed trip file to finance", "Pending", "#/employee/report")}
       </section>
       <section class="panel">
         <h3>Employee view</h3>
-        <p class="section-lead">The employee does not see company-wide data. They only see their own budget, trip, expenses, missing documents, and report submission status.</p>
-        <button class="btn primary" onclick="setRoute('#/employee/receipts')">Upload receipt</button>
+        <p class="section-lead">${isKa() ? "თანამშრომელი ვერ ხედავს კომპანიის მთლიან მონაცემებს. ხედავს მხოლოდ საკუთარ ფორმას, ბიუჯეტს, ხარჯებს და ასატვირთ დოკუმენტებს." : "The employee does not see company-wide data. They only see their own budget, trip, expenses, missing documents, and report submission status."}</p>
+        <button class="btn primary" onclick="setRoute('#/mission-form')">${isKa() ? "მივლინების ფორმის შევსება" : "Complete mission form"}</button>
       </section>
     </div>`;
+}
+
+function missionFormPage() {
+  return `<div class="page">${topNav()}
+    <section class="section mission-form-page">
+      ${title(isKa() ? "მივლინების ფორმა" : "Business trip form", isKa() ? "თანამშრომელი ავსებს ფორმას, აწერს ხელს და ადასტურებს. დადასტურების შემდეგ ფორმა ჩანს დამსაქმებლის dashboard-ში." : "The employee fills this shared form, signs it, and confirms it. After submission, the employer sees it in the dashboard.", `<button class="btn" onclick="setRoute('#/employee')">${isKa() ? "თანამშრომლის პორტალი" : "Employee portal"}</button>`)}
+      ${state.missionFormSubmitted ? `<div class="trip-banner"><span>${isKa() ? "ფორმა დადასტურებულია და ჩანს დამსაქმებლის პანელში." : "Form confirmed and visible to the employer."}</span>${badge(isKa() ? "დადასტურებულია" : "Confirmed")}</div>` : ""}
+      <div class="dash-grid">
+        <section class="panel">
+          <h3>${isKa() ? "შესავსები ველები" : "Required fields"}</h3>
+          <div class="form-grid">
+            ${field(isKa() ? "მივლინებულის სახელი და გვარი" : "Employee full name", "ნინო ბერიძე")}
+            ${field(isKa() ? "საკონტაქტო მაილი" : "Contact email", "nino@demo-company.ge")}
+            ${field(isKa() ? "პოზიცია/თანამდებობა" : "Position", "Sales Manager")}
+            ${field(isKa() ? "დამსაქმებელი პირის საიდენტიფიკაციო" : "Employer identification number", company.id)}
+            ${field(isKa() ? "დამსაქმებელი პირის დასახელება" : "Employer name", company.name)}
+            ${field(isKa() ? "დანიშნულების პუნქტი / ორგანიზაცია" : "Destination / host organization", "Batumi regional partner office")}
+            ${field(isKa() ? "გავიდა: დღე, თვე, წელი" : "Departure: day, month, year", "June 1, 2026")}
+            ${field(isKa() ? "გამოცხადდა: დღე, თვე, წელი" : "Arrived: day, month, year", "June 1, 2026")}
+            ${field(isKa() ? "დაბრუნდა / გავიდა: დღე, თვე, წელი" : "Return departure: day, month, year", "June 30, 2026")}
+            ${field(isKa() ? "დამსაქმებელთან გამოცხადდა: დღე, თვე, წელი" : "Returned to employer: day, month, year", "June 30, 2026")}
+            <div class="field wide"><label>${isKa() ? "მოხსენებითი ბარათი (არასავალდებულო)" : "Trip note / memo (optional)"}</label><textarea>${isKa() ? "რეგიონული გაყიდვების შეხვედრები და პარტნიორებთან ვიზიტები." : "Regional sales meetings and partner visits."}</textarea></div>
+            ${field(isKa() ? "მივლინებული პირის ხელმოწერა" : "Employee signature", "Nino Beridze")}
+          </div>
+          <div class="signature-box">
+            <span>${isKa() ? "ელექტრონული ხელმოწერა" : "Electronic signature"}</span>
+            <strong>Nino Beridze</strong>
+          </div>
+          <br>
+          <button class="btn primary" onclick="state.missionFormSubmitted=true;render()">${isKa() ? "ხელმოწერა და დადასტურება" : "Sign and confirm"}</button>
+          <button class="btn" onclick="setRoute('#/dashboard/mission-forms')">${isKa() ? "დამსაქმებლის ხედვა" : "Employer view"}</button>
+        </section>
+        <section class="panel">
+          <h3>${isKa() ? "Jotform ინტეგრაციის მაგალითი" : "Jotform integration example"}</h3>
+          <p class="section-lead">${isKa() ? "ეს არის იგივე ფორმის ჩასმის ადგილი. რეალურ ვერსიაში აქ შეიძლება ჩაიტვირთოს Jotform ან perDM-ის native ფორმა." : "This is where the shared Jotform or native perDM form can be embedded in the real product."}</p>
+          <iframe class="jotform-frame" title="Mission form" src="https://form.jotform.com/252885161056056"></iframe>
+        </section>
+      </div>
+    </section>
+  </div>`;
+}
+
+function missionFormPreview() {
+  return `<section class="panel mission-preview" style="margin-top:16px">
+    <h3>${isKa() ? "დადასტურებული ფორმის Preview" : "Confirmed form preview"}</h3>
+    <div class="grid-3">
+      ${stat(isKa() ? "მივლინებული" : "Employee", "ნინო ბერიძე", "nino@demo-company.ge")}
+      ${stat(isKa() ? "დამსაქმებელი" : "Employer", company.name, company.id)}
+      ${stat(isKa() ? "დანიშნულება" : "Destination", "Batumi", isKa() ? "რეგიონული პარტნიორი" : "Regional partner")}
+      ${stat(isKa() ? "გავიდა" : "Departure", "June 1, 2026", isKa() ? "ხელმოწერა: დამსაქმებელი" : "Employer signature")}
+      ${stat(isKa() ? "გამოცხადდა" : "Arrived", "June 1, 2026", isKa() ? "მიმღები მხარის ხელმოწერა" : "Host signature")}
+      ${stat(isKa() ? "ხელმოწერა" : "Signature", "Nino Beridze", isKa() ? "დადასტურებულია" : "Confirmed")}
+    </div>
+  </section>`;
 }
 
 function employeeTrip() {
@@ -701,7 +798,9 @@ function render() {
   if (hash === "#/demo") html = demo();
   if (hash === "#/login") html = loginPage();
   if (hash === "#/signup") html = signupPage();
+  if (hash === "#/mission-form") html = missionFormPage();
   if (hash === "#/dashboard") html = dashboard();
+  if (hash === "#/dashboard/mission-forms") html = missionFormsPage();
   if (hash === "#/dashboard/trips") html = tripsPage();
   if (hash.startsWith("#/dashboard/trips/")) html = tripDetail();
   if (hash === "#/dashboard/employees") html = employeesPage();
@@ -711,6 +810,7 @@ function render() {
   if (hash === "#/dashboard/settings") html = settingsPage();
   if (hash === "#/dashboard/future-modules") html = futurePage();
   if (hash === "#/employee") html = employeePortal("overview");
+  if (hash === "#/employee/mission-form") html = missionFormPage();
   if (hash === "#/employee/trip") html = employeePortal("trip");
   if (hash === "#/employee/expenses") html = employeePortal("expenses");
   if (hash === "#/employee/receipts") html = employeePortal("receipts");
