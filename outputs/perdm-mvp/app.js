@@ -16,7 +16,6 @@ const state = {
   distanceKm: 18.4,
   limitAlert: false,
   bankLinked: true,
-  walletTopUp: false,
   employeeBankLinked: false,
   aiAnswered: false,
 };
@@ -98,13 +97,13 @@ const trips = [
 ];
 
 const baseExpenses = [
-  ["June 1", "perDM Card", "Hotel Batumi", "Hotel", 720, "Attached", "Approved", "Invoice and receipt matched"],
-  ["June 2", "perDM Card", "Restaurant", "Meals", 85, "Attached", "Approved", "Client dinner"],
+  ["June 1", "TBC Card", "Hotel Batumi", "Hotel", 720, "Attached", "Approved", "Invoice and receipt matched"],
+  ["June 2", "BOG Card", "Restaurant", "Meals", 85, "Attached", "Approved", "Client dinner"],
   ["June 3", "Cash", "Taxi", "Transport", 35, "Missing", "Needs receipt", "Receipt requested from employee"],
-  ["June 5", "perDM Card", "Fuel Station", "Fuel", 160, "Attached", "Approved", "Sales route fuel"],
+  ["June 5", "TBC Card", "Fuel Station", "Fuel", 160, "Attached", "Approved", "Sales route fuel"],
   ["June 8", "Cash", "Parking", "Transport", 15, "Missing", "Needs receipt", "Small cash payment"],
-  ["June 12", "perDM Card", "Hotel Batumi", "Hotel", 720, "Attached", "Pending review", "Second hotel invoice"],
-  ["June 18", "perDM Card", "Restaurant", "Meals", 95, "Attached", "Pending review", "Partner lunch"],
+  ["June 12", "BOG Card", "Hotel Batumi", "Hotel", 720, "Attached", "Pending review", "Second hotel invoice"],
+  ["June 18", "TBC Card", "Restaurant", "Meals", 95, "Attached", "Pending review", "Partner lunch"],
   ["June 25", "Cash", "Local transport", "Transport", 80, "Attached", "Approved", "Airport transfer"],
 ];
 
@@ -125,8 +124,9 @@ const cardTransactions = [
 ];
 
 const bankSources = [
-  ["TBC Bank", "Business Visa", "**** 2048", 12000, "Connected"],
-  ["Bank of Georgia", "Corporate account", "GE29 BG00 **** 7710", 6400, "Ready"],
+  ["TBC Bank", "Business Visa", "**** 2048", "Connected"],
+  ["Bank of Georgia", "Corporate Mastercard", "**** 7710", "Connected"],
+  ["Liberty Bank", "Employee Visa", "**** 9182", "Ready"],
 ];
 
 const partnerOffers = [
@@ -241,7 +241,7 @@ function landing() {
           <div class="mini-grid">
             ${mini(ka ? "AI რეკომენდაცია" : "AI recommendation", ka ? "მარშრუტი + ბიუჯეტი" : "Route + budget")}
             ${mini(ka ? "ლოკაცია" : "Location", `${state.distanceKm} km`)}
-            ${mini(ka ? "Wallet / ბარათი" : "Wallet / card", "3,000 GEL")}
+            ${mini(ka ? "ბანკის ბარათები" : "Bank cards", "TBC / BOG")}
             ${mini(ka ? "კანონის შემოწმება" : "Legal check", ka ? "30კმ წესი" : "30 km rule")}
           </div>
           <div class="preview-table">
@@ -258,9 +258,9 @@ function landing() {
         <div class="grid-3">
           ${card(1, ka ? "კომპანია რეგისტრირდება" : "Company registers", ka ? "დამსაქმებელი ქმნის perDM-ის კომპანიის ანგარიშს და ამატებს თანამშრომლებს." : "The employer creates a perDM company account and sets basic accounting rules.")}
           ${card(2, ka ? "AI გეგმავს მარშრუტს და ხარჯს" : "AI plans route and cost", ka ? "სისტემა ითვლის ლოკაციას, მანძილს, სავარაუდო ხარჯს და შესაბამის წესებს." : "The system reads location, distance, estimated cost, and relevant policy rules.")}
-          ${card(3, ka ? "თანამშრომელი იღებს ლინკს და ბარათს" : "Employees receive login and card", ka ? "თანამშრომელი ავსებს ფორმას, აბამს სურვილის შემთხვევაში საკუთარ ბარათს, იღებს perDM ბიუჯეტს და ტვირთავს ქვითრებს." : "Employees complete the form, optionally connect their own card, receive PerDM budget, and upload receipts.")}
+          ${card(3, ka ? "თანამშრომელი იღებს ლინკს და აბამს ბარათს" : "Employees receive login and link cards", ka ? "თანამშრომელი ავსებს ფორმას, აბამს თავის არსებულ საბანკო ბარათს და ტვირთავს ქვითრებს." : "Employees complete the form, connect their existing bank card, and upload receipts.")}
           ${card(4, ka ? "გეოლოკაცია ააქტიურებს მივლინებას" : "Geolocation activates the trip", ka ? "თუ თანამშრომელი ოფისიდან 12კმ-ზე მეტ მანძილზეა, სისტემა აჩვენებს აქტიურ მივლინებას." : "If the employee is more than 12 km from the office, the trip becomes active in the interface.")}
-          ${card(5, ka ? "პარტნიორები ქმნიან შეთავაზებებს" : "Partners create offers", ka ? "სასტუმროები, საწვავი და კვების ობიექტები ქმნიან ფასდაკლებებს perDM ბარათისთვის." : "Hotels, fuel stations, and restaurants can create discounts for perDM card users.")}
+          ${card(5, ka ? "პარტნიორები ქმნიან შეთავაზებებს" : "Partners create offers", ka ? "სასტუმროები, საწვავი და კვების ობიექტები ქმნიან ფასდაკლებებს PerDM-ში მიბმული ბარათებით გადახდაზე." : "Hotels, fuel stations, and restaurants can create discounts for PerDM users paying with linked cards.")}
           ${card(6, ka ? "ქეშბექი და ბონუსი" : "Cashback and bonus tracking", ka ? "თანამშრომელი ხედავს მიღებულ ქეშბექს, კომპანია კი ჯამურ დაზოგვას." : "Employees see earned cashback, while the company sees total savings.")}
           ${card(7, ka ? "კანონთან შესაბამისობა" : "Legal rule checks", ka ? "სისტემა ითვლის მანძილს მუდმივი სამუშაო ადგილიდან და აჩვენებს 30კმ წესს, დღიურ ნორმას და დოკუმენტაციის სტატუსს." : "The system calculates distance from the permanent workplace and shows 30 km rules, daily allowance, and documentation status.")}
           ${card(8, ka ? "ავტომატური ანგარიშგება" : "Automated reporting", ka ? "მივლინების დასრულებისას ანგარიში გენერირდება ფორმებით, ქვითრებით, ბარათის მოძრაობით და კანონის შემოწმებით." : "At trip completion, reports are generated with forms, receipts, card activity, and compliance checks.")}
@@ -278,13 +278,13 @@ function landing() {
         <h2>${ka ? "მივლინება დღეს ბევრ სისტემაში იფანტება" : "Business travel is still split across too many systems"}</h2>
         <p class="section-lead">${ka ? "ლოკაცია, მარშრუტი, კანონით განსაზღვრული წესები, ბარათები, ქვითრები, პარტნიორი სერვისები და ანგარიშგება ხშირად ცალ-ცალკეა. PerDM ამ პროცესს ერთ სამუშაო სივრცეში აერთიანებს." : "Location, routes, legal rules, cards, receipts, service providers, and reporting often live apart. PerDM brings the full travel workflow into one workspace."}</p>
         <div class="grid-3">
-          ${(ka ? ["მარშრუტი და ხარჯი წინასწარ არ ითვლება", "კანონის წესები ხელით მოწმდება", "ქვითრები და ბარათები ცალკეა", "თანამშრომელი გვიან იგებს ლიმიტებს", "ბუღალტერი ბევრ ფაილს აერთიანებს", "პარტნიორი სერვისები პროცესს გარეთ რჩება"] : ["Routes and costs are not planned upfront", "Legal rules are checked manually", "Receipts and cards are separate", "Employees learn limits too late", "Finance reconciles too many files", "Service providers stay outside the workflow"]).map((x, i) => card(i + 1, x, ka ? "PerDM ამ ყველაფერს AI-ით, ლოკაციით, wallet-ით და ავტომატური ანგარიშგებით აერთიანებს." : "PerDM combines this with AI, location, wallet logic, and automated reporting.")).join("")}
+          ${(ka ? ["მარშრუტი და ხარჯი წინასწარ არ ითვლება", "კანონის წესები ხელით მოწმდება", "ქვითრები და ბარათები ცალკეა", "თანამშრომელი გვიან იგებს ლიმიტებს", "ბუღალტერი ბევრ ფაილს აერთიანებს", "პარტნიორი სერვისები პროცესს გარეთ რჩება"] : ["Routes and costs are not planned upfront", "Legal rules are checked manually", "Receipts and cards are separate", "Employees learn limits too late", "Finance reconciles too many files", "Service providers stay outside the workflow"]).map((x, i) => card(i + 1, x, ka ? "PerDM ამ ყველაფერს AI-ით, ლოკაციით, საბანკო ბარათების სინქით და ავტომატური ანგარიშგებით აერთიანებს." : "PerDM combines this with AI, location, bank-card sync, and automated reporting.")).join("")}
         </div>
       </section>
       <section class="band"><div class="section" id="workflow">
         <h2>${ka ? "PerDM მივლინებას გეგმავს, აკონტროლებს და ანგარიშად აქცევს" : "PerDM plans, controls, and reports each business trip"}</h2>
-        <p class="section-lead">${ka ? "კომპანია ქმნის მივლინებას, AI ეხმარება მარშრუტისა და ხარჯის ოპტიმიზაციაში, გეოლოკაცია ააქტიურებს სტატუსს, wallet ანაწილებს თანხას, ხოლო სისტემა ბოლოს ანგარიშს ავტომატურად ამზადებს." : "The company creates a trip, AI helps optimize route and cost, geolocation activates status, the wallet distributes funds, and the system automatically prepares the final report."}</p>
-        <div class="grid-5">${(ka ? ["მივლინების შექმნა", "AI მარშრუტი და ხარჯი", "გეოლოკაცია და კანონის წესი", "Wallet, ბარათი და ქვითრები", "ავტომატური ანგარიში"] : ["Create trip", "AI route and cost", "Geolocation and legal rules", "Wallet, card, and receipts", "Automated report"]).map((x, i) => step(i + 1, x)).join("")}</div>
+        <p class="section-lead">${ka ? "კომპანია ქმნის მივლინებას, AI ეხმარება მარშრუტისა და ხარჯის ოპტიმიზაციაში, გეოლოკაცია ააქტიურებს სტატუსს, არსებული ბანკების ბარათები სინქდება, ხოლო სისტემა ბოლოს ანგარიშს ავტომატურად ამზადებს." : "The company creates a trip, AI helps optimize route and cost, geolocation activates status, existing bank cards sync transactions, and the system automatically prepares the final report."}</p>
+        <div class="grid-5">${(ka ? ["მივლინების შექმნა", "AI მარშრუტი და ხარჯი", "გეოლოკაცია და კანონის წესი", "ბანკის ბარათები და ქვითრები", "ავტომატური ანგარიში"] : ["Create trip", "AI route and cost", "Geolocation and legal rules", "Bank cards and receipts", "Automated report"]).map((x, i) => step(i + 1, x)).join("")}</div>
       </div></section>
       <section class="section" id="benefits">
         <h2>${ka ? "სარგებელი სამივე მხარისთვის" : "Value for all three sides"}</h2>
@@ -294,7 +294,7 @@ function landing() {
       </section>
       <section class="section future-strip">
         <h2>${ka ? "პლატფორმის ძირითადი მოდულები" : "Core platform modules"}</h2>
-        <p class="section-lead">${ka ? "AI ასისტენტი, გეოლოკაცია, საქართველოს კანონმდებლობის წესები, perDM Wallet, თანამშრომლის ბარათის მიბმა, პარტნიორი შეთავაზებები, ქვითრები და ავტომატური ანგარიშგება ერთიან პროდუქტად იკვრება." : "AI assistant, geolocation, Georgian legal rules, PerDM Wallet, employee card linking, partner offers, receipts, and automated reports come together as one product."}</p>
+        <p class="section-lead">${ka ? "AI ასისტენტი, გეოლოკაცია, საქართველოს კანონმდებლობის წესები, არსებული საბანკო ბარათების მიბმა, პარტნიორი შეთავაზებები, ქვითრები და ავტომატური ანგარიშგება ერთიან პროდუქტად იკვრება." : "AI assistant, geolocation, Georgian legal rules, existing bank-card linking, partner offers, receipts, and automated reports come together as one product."}</p>
       </section>
     </main>
   </div>`;
@@ -323,7 +323,7 @@ function demo() {
     <div class="grid-2 demo-choice-grid">
       ${demoCard(ka ? "კომპანიის ხედვა" : "Company view", ka ? "კომპანია ხედავს თანამშრომლებს, მივლინების ფორმებს, ბიუჯეტებს, ხარჯებს, ქვითრებს და ანგარიშებს." : "The company sees all employees, trips, budgets, card and cash expenses, missing receipts, approvals, and export-ready reports.", "#/dashboard", ka ? "კომპანიის დემო" : "Open company demo")}
       ${demoCard(ka ? "თანამშრომლის ხედვა" : "Employee view", ka ? "თანამშრომელი ხედავს საკუთარ მივლინებას, ფორმას, ბიუჯეტს, ხარჯებს, ასატვირთ ქვითრებს და დადასტურების სტატუსს." : "The employee sees only their assigned trip, remaining budget, personal expenses, missing receipt tasks, and report submission status.", "#/employee", ka ? "თანამშრომლის დემო" : "Open employee demo")}
-      ${demoCard(ka ? "პარტნიორი ბიზნესის ხედვა" : "Partner business view", ka ? "პარტნიორი ქმნის შეთავაზებებს perDM ბარათზე, ხედავს ტრანზაქციებს და გადახდის მიღების სტატუსს." : "The partner creates perDM card offers, sees transactions, and tracks payout status.", "#/partner", ka ? "პარტნიორის დემო" : "Open partner demo")}
+      ${demoCard(ka ? "პარტნიორი ბიზნესის ხედვა" : "Partner business view", ka ? "პარტნიორი ქმნის შეთავაზებებს PerDM მომხმარებლებისთვის და ხედავს მიბმული საბანკო ბარათებით შესრულებულ ტრანზაქციებს." : "The partner creates offers for PerDM users and sees transactions made with linked bank cards.", "#/partner", ka ? "პარტნიორის დემო" : "Open partner demo")}
     </div>
     <section class="panel demo-compare">
       <h3>${ka ? "როგორ უკავშირდება ორი დემო ერთმანეთს" : "How the two demos connect"}</h3>
@@ -440,7 +440,7 @@ const links = [
   ["overview", "Overview", "#/dashboard"],
   ["ai", "AI Assistant", "#/dashboard/ai"],
   ["missionForms", "Mission Forms", "#/dashboard/mission-forms"],
-  ["payments", "Wallet & Cards", "#/dashboard/payments"],
+  ["payments", "Linked Cards", "#/dashboard/payments"],
   ["policies", "Travel Policies", "#/dashboard/policies"],
   ["legal", "Legal Rules", "#/dashboard/legal"],
   ["locations", "Live Location", "#/dashboard/locations"],
@@ -469,7 +469,7 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "AI Assistant": "✦", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", "Live Location": "⌖", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "AI Assistant": "✦", "Mission Forms": "✎", "Linked Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", "Live Location": "⌖", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
@@ -479,8 +479,8 @@ function dashboard() {
     <div class="stats">
       ${stat(isKa() ? "მივლინების ფორმები" : "Mission forms", state.missionFormSubmitted ? "1" : "0", state.missionFormSubmitted ? (isKa() ? "დადასტურებული" : "Confirmed") : (isKa() ? "ელოდება შევსებას" : "Waiting for employee"))}
       ${stat(isKa() ? "ლოკაცია" : "Location", state.locationShared ? (isKa() ? "გაზიარებულია" : "Shared") : (isKa() ? "გამორთულია" : "Off"), `${state.distanceKm} km`)}
-      ${stat(isKa() ? "კომპანიის wallet" : "Company wallet", money(18400), isKa() ? "ვირტუალური ბარათებისთვის" : "For virtual cards")}
-      ${stat(isKa() ? "აქტიური ბარათები" : "Active cards", state.cardFrozen ? "4" : "5", state.cardFrozen ? (isKa() ? "1 გაყინული" : "1 frozen") : (isKa() ? "ყველა აქტიური" : "All active"))}
+      ${stat(isKa() ? "მიბმული ბარათები" : "Linked cards", "3", "TBC / BOG / Liberty")}
+      ${stat(isKa() ? "ბარათის სინქი" : "Card sync", state.cardFrozen ? (isKa() ? "შეჩერებულია" : "Paused") : (isKa() ? "აქტიურია" : "Active"), state.cardFrozen ? (isKa() ? "1 კავშირი გაჩერებულია" : "1 link paused") : (isKa() ? "ყველა კავშირი აქტიურია" : "All links active"))}
       ${stat("Active business trips", "4", "2 end this week")}
       ${stat("Completed trips waiting for report", "3", "Nino needs review")}
       ${stat("Expenses this month", money(8420), "Card and cash combined")}
@@ -556,59 +556,57 @@ function paymentsPage() {
   const ka = isKa();
   const simulated = state.paymentSimulated ? [["June 29", "Pharmacy", "Other", 28, "Pending review"]] : [];
   const rows = [...cardTransactions, ...simulated];
-  const walletBalance = 18400 + (state.walletTopUp ? 5000 : 0);
-  return shell("payments", `${title(ka ? "perDM Wallet და ელექტრონული ბარათები" : "perDM Wallet & virtual cards", ka ? "კომპანია აბამს TBC/საქართველოს ბანკის ბარათს ან ანგარიშს, ავსებს perDM Wallet-ს და იქიდან ანაწილებს თანხას თანამშრომლების ბარათებზე." : "The company connects a TBC/Bank of Georgia card or account, funds the perDM Wallet, and distributes money to employee cards.", `<button class="btn primary" onclick="state.walletTopUp=true;render()">${ka ? "Wallet-ის შევსება" : "Top up wallet"}</button>`)}
-    ${state.walletTopUp ? `<div class="trip-banner"><span>${ka ? "Wallet შეივსო 5,000 GEL-ით მიბმული საბანკო წყაროდან." : "Wallet topped up by 5,000 GEL from a linked bank source."}</span>${badge(ka ? "დადასტურებულია" : "Confirmed")}</div>` : ""}
+  return shell("payments", `${title(ka ? "ბანკის ბარათების მიბმა" : "Linked bank cards", ka ? "PerDM არ ინახავს ფულს და არ უშვებს საკუთარ ბარათს. კომპანია და თანამშრომელი აბამენ უკვე არსებულ ქართულ საბანკო ბარათებს, სისტემა კი კითხულობს ტრანზაქციებს, აკონტროლებს ლიმიტებს და ამზადებს ანგარიშებს." : "PerDM does not hold money or issue its own card. Companies and employees connect existing Georgian bank cards, while the system reads transactions, checks limits, and prepares reports.", `<button class="btn primary" onclick="state.bankLinked=true;render()">${ka ? "ბარათის მიბმა" : "Connect card"}</button>`)}
     <div class="stats">
-      ${stat(ka ? "perDM Wallet" : "perDM Wallet", money(walletBalance), ka ? "ხელმისაწვდომი თანხა" : "Available funds")}
-      ${stat(ka ? "მიბმული წყაროები" : "Linked sources", state.bankLinked ? "2" : "0", "TBC / BOG")}
-      ${stat(ka ? "გამოყოფილი ბიუჯეტი" : "Allocated to cards", money(6400), ka ? "5 თანამშრომელი" : "5 employees")}
-      ${stat(ka ? "Nino-ს ბარათი" : "Nino's card", money(3000 - nino().total - (state.paymentSimulated ? 28 : 0)), state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"))}
-      ${stat(ka ? "თვიური card spend" : "Monthly card spend", money(8420), ka ? "mock ტრანზაქციები" : "Mock transactions")}
+      ${stat(ka ? "მიბმული ბარათები" : "Linked cards", state.bankLinked ? "3" : "0", "TBC / BOG / Liberty")}
+      ${stat(ka ? "თვიური ხარჯი" : "Monthly spend", money(8420), ka ? "სინქრონიზებული ტრანზაქციები" : "Synced transactions")}
+      ${stat(ka ? "კომპანიის ლიმიტი" : "Company policy limit", "500 GEL", ka ? "დღიური კონტროლი" : "Daily control")}
+      ${stat(ka ? "ქვითრები" : "Receipts", "18/20", ka ? "ტრანზაქციებზე მიბმული" : "Linked to transactions")}
     </div>
     <div class="dash-grid">
       <section class="panel">
         <h3>${ka ? "მიბმული ბანკები და ბარათები" : "Linked banks and cards"}</h3>
-        <p class="section-lead">${ka ? "რეალურ პროდუქტში აქ იქნებოდა ბანკის/გადახდის პროვაიდერის უსაფრთხო ავტორიზაცია. perDM ინახავს მხოლოდ token-ს და არა სრულ ბარათის მონაცემებს." : "In the real product this would use secure bank/payment-provider authorization. perDM stores only a token, not full card data."}</p>
+        <p class="section-lead">${ka ? "რეალურ პროდუქტში აქ იქნება ბანკის/Open Banking/გადახდის პროვაიდერის უსაფრთხო ავტორიზაცია. PerDM ინახავს მხოლოდ token-ს და არა სრულ ბარათის მონაცემებს." : "In the real product this uses secure bank/Open Banking/payment-provider authorization. PerDM stores only a token, not full card data."}</p>
         <div class="bank-source-list">
           ${bankSources.map((source) => bankSource(source, ka)).join("")}
         </div>
         <div class="action-row">
           <button class="btn primary" onclick="state.bankLinked=true;render()">${ka ? "TBC-ის მიბმა" : "Connect TBC"}</button>
           <button class="btn" onclick="state.bankLinked=true;render()">${ka ? "საქართველოს ბანკის მიბმა" : "Connect BOG"}</button>
+          <button class="btn" onclick="state.bankLinked=true;render()">${ka ? "Liberty-ის მიბმა" : "Connect Liberty"}</button>
         </div>
       </section>
       <section class="panel">
-        <h3>${ka ? "Wallet მოძრაობა" : "Wallet movement"}</h3>
+        <h3>${ka ? "ტრანზაქციის სინქი" : "Transaction sync"}</h3>
         <div class="wallet-flow">
-          <div><strong>${ka ? "ბანკი / ბარათი" : "Bank / card"}</strong><span>TBC, BOG</span></div>
-          <div><strong>${ka ? "perDM Wallet" : "perDM Wallet"}</strong><span>${money(walletBalance)}</span></div>
-          <div><strong>${ka ? "თანამშრომლის ბარათები" : "Employee cards"}</strong><span>${money(6400)}</span></div>
+          <div><strong>${ka ? "არსებული ბანკი" : "Existing bank"}</strong><span>TBC, BOG, Liberty</span></div>
+          <div><strong>${ka ? "PerDM sync" : "PerDM sync"}</strong><span>${ka ? "token + consent" : "token + consent"}</span></div>
+          <div><strong>${ka ? "ანგარიშგება" : "Reporting"}</strong><span>${ka ? "ქვითრები + წესები" : "Receipts + rules"}</span></div>
         </div>
         <div class="form-grid">
-          ${field(ka ? "შევსების წყარო" : "Funding source", "TBC Business Visa", "select")}
-          ${field(ka ? "თანხა" : "Amount", "5,000 GEL")}
-          ${field(ka ? "დანიშნულება" : "Purpose", ka ? "სამივლინებო Wallet" : "Business travel wallet")}
+          ${field(ka ? "ბარათი" : "Card", "TBC Business Visa", "select")}
+          ${field(ka ? "სინქის რეჟიმი" : "Sync mode", ka ? "ტრანზაქციების წაკითხვა" : "Read transactions", "select")}
+          ${field(ka ? "დანიშნულება" : "Purpose", ka ? "მივლინების ხარჯების კონტროლი" : "Business travel expense control")}
           ${field(ka ? "დადასტურება" : "Confirmation", ka ? "2FA / ბანკის თანხმობა" : "2FA / bank consent", "select")}
         </div>
       </section>
       <section class="panel">
-        <h3>${ka ? "perDM Business Travel Card" : "perDM Business Travel Card"}</h3>
+        <h3>${ka ? "მიბმული ბარათის Preview" : "Linked card preview"}</h3>
         ${virtualCard()}
         <div class="action-row">
-          <button class="btn" onclick="state.cardFrozen=!state.cardFrozen;render()">${state.cardFrozen ? (ka ? "ბარათის გააქტიურება" : "Unfreeze card") : (ka ? "ბარათის გაყინვა" : "Freeze card")}</button>
+          <button class="btn" onclick="state.cardFrozen=!state.cardFrozen;render()">${state.cardFrozen ? (ka ? "სინქის ჩართვა" : "Resume sync") : (ka ? "სინქის შეჩერება" : "Pause sync")}</button>
           <button class="btn" onclick="state.paymentSimulated=true;render()">${ka ? "ტრანზაქციის დამატება" : "Add mock transaction"}</button>
         </div>
       </section>
       <section class="panel">
-        <h3>${ka ? "ბარათის წესები" : "Card controls"}</h3>
+        <h3>${ka ? "ბარათის წესები და ლიმიტები" : "Card rules and limits"}</h3>
         <div class="form-grid">
           ${field(ka ? "დღიური ლიმიტი" : "Daily limit", "500 GEL")}
           ${field(ka ? "სასტუმრო" : "Hotel category", "Allowed", "select")}
           ${field(ka ? "საკვები" : "Meals category", "Allowed", "select")}
           ${field(ka ? "საწვავი" : "Fuel category", "Allowed", "select")}
           ${field(ka ? "ქვითარი სავალდებულოა ზემოთ" : "Receipt required above", "40 GEL")}
-          ${field(ka ? "ბარათის სტატუსი" : "Card status", state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"), "select")}
+          ${field(ka ? "სინქის სტატუსი" : "Sync status", state.cardFrozen ? (ka ? "შეჩერებულია" : "Paused") : (ka ? "აქტიური" : "Active"), "select")}
         </div>
       </section>
     </div>
@@ -621,7 +619,7 @@ function paymentsPage() {
 function bankSource(source, ka) {
   return `<div class="bank-source">
     <div><strong>${source[0]}</strong><span>${source[1]} · ${source[2]}</span></div>
-    <div><strong>${money(source[3])}</strong>${badge(ka ? (source[4] === "Connected" ? "მიბმულია" : "მზადაა") : source[4])}</div>
+    <div><strong>${ka ? "სინქი" : "Sync"}</strong>${badge(ka ? (source[3] === "Connected" ? "მიბმულია" : "მზადაა") : source[3])}</div>
   </div>`;
 }
 
@@ -718,16 +716,16 @@ function alertBox(text, tone) {
 
 function budgetsPage() {
   const ka = isKa();
-  return shell("budgets", `${title(ka ? "ბიუჯეტის განაწილება" : "Budget distribution", ka ? "ორგანიზაცია ანაწილებს თანხას ერთდროულად ან ინდივიდუალურად თანამშრომლების perDM ბარათებზე." : "The organization distributes funds in bulk or individually to employee perDM cards.", `<button class="btn primary" onclick="state.budgetDistributed=true;render()">${ka ? "ერთდროულად განაწილება" : "Distribute in bulk"}</button>`)}
+  return shell("budgets", `${title(ka ? "ლიმიტები და ბიუჯეტის წესები" : "Limits and budget rules", ka ? "ორგანიზაცია ადგენს სამივლინებო ლიმიტებს. თანხა PerDM-ში არ ირიცხება; ხარჯები კონტროლდება მიბმული საბანკო ბარათებიდან." : "The organization defines travel limits. Money is not deposited into PerDM; spending is monitored from linked bank cards.", `<button class="btn primary" onclick="state.budgetDistributed=true;render()">${ka ? "ლიმიტების დამტკიცება" : "Approve limits"}</button>`)}
     <div class="stats">
-      ${stat(ka ? "საერთო ბიუჯეტი" : "Total travel budget", money(18400), ka ? "თვიური" : "Monthly")}
-      ${stat(ka ? "განაწილებულია" : "Distributed", state.budgetDistributed ? money(7200) : money(6400), ka ? "ბარათებზე" : "To cards")}
-      ${stat(ka ? "დარჩენილი pool" : "Remaining pool", state.budgetDistributed ? money(11200) : money(12000), ka ? "გასანაწილებელი" : "Unassigned")}
+      ${stat(ka ? "დამტკიცებული ლიმიტი" : "Approved limit", money(18400), ka ? "თვიური პოლიტიკა" : "Monthly policy")}
+      ${stat(ka ? "აქტიური ლიმიტები" : "Active limits", state.budgetDistributed ? money(7200) : money(6400), ka ? "თანამშრომლებზე" : "By employee")}
+      ${stat(ka ? "დარჩენილი კონტროლი" : "Remaining control", state.budgetDistributed ? money(11200) : money(12000), ka ? "პოლიტიკის ფარგლებში" : "Within policy")}
       ${stat(ka ? "ქეშბექი" : "Cashback", money(1260), ka ? "ამ თვეში" : "This month")}
     </div>
     <section class="panel table-wrap" style="margin-top:16px">
-      <table><thead><tr><th>${ka ? "თანამშრომელი" : "Employee"}</th><th>${ka ? "დეპარტამენტი" : "Department"}</th><th>${ka ? "ბიუჯეტი" : "Budget"}</th><th>${ka ? "ბარათზე" : "On card"}</th><th>${ka ? "დახარჯული" : "Spent"}</th><th>${ka ? "ქმედება" : "Action"}</th></tr></thead><tbody>
-        ${employees.map((e, i) => `<tr><td><strong>${e[0]}</strong></td><td>${e[2]}</td><td>${money([3000, 900, 600, 1200, 700][i])}</td><td>${badge(i < 3 || state.budgetDistributed ? (ka ? "ჩარიცხულია" : "Loaded") : (ka ? "ელოდება" : "Pending"))}</td><td>${money(e[5])}</td><td><button class="btn small">${ka ? "ინდივიდუალურად" : "Assign individual"}</button></td></tr>`).join("")}
+      <table><thead><tr><th>${ka ? "თანამშრომელი" : "Employee"}</th><th>${ka ? "დეპარტამენტი" : "Department"}</th><th>${ka ? "ლიმიტი" : "Limit"}</th><th>${ka ? "ბარათი" : "Card"}</th><th>${ka ? "დახარჯული" : "Spent"}</th><th>${ka ? "ქმედება" : "Action"}</th></tr></thead><tbody>
+        ${employees.map((e, i) => `<tr><td><strong>${e[0]}</strong></td><td>${e[2]}</td><td>${money([3000, 900, 600, 1200, 700][i])}</td><td>${badge(i < 3 || state.budgetDistributed ? (ka ? "მიბმულია" : "Linked") : (ka ? "ელოდება" : "Pending"))}</td><td>${money(e[5])}</td><td><button class="btn small">${ka ? "ლიმიტი" : "Edit limit"}</button></td></tr>`).join("")}
       </tbody></table>
     </section>`);
 }
@@ -737,8 +735,8 @@ function virtualCard() {
     <div class="brand">${brandIcon()}<span class="brand-word">PerDM</span></div>
     <div>
       <div class="card-number">**** **** **** 4829</div>
-      <div class="virtual-card-row"><span>Nino Beridze</span><span>${state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active")}</span></div>
-      <div class="virtual-card-row"><span>${company.name}</span><span>${money(3000 - nino().total - (state.paymentSimulated ? 28 : 0))}</span></div>
+      <div class="virtual-card-row"><span>${isKa() ? "მიბმული TBC Visa" : "Linked TBC Visa"}</span><span>${state.cardFrozen ? (isKa() ? "სინქი შეჩერებულია" : "Sync paused") : (isKa() ? "სინქი აქტიურია" : "Sync active")}</span></div>
+      <div class="virtual-card-row"><span>Nino Beridze</span><span>${isKa() ? "tokenized" : "tokenized"}</span></div>
     </div>
   </div>`;
 }
@@ -913,11 +911,11 @@ function settingsPage() {
 
 function futurePage() {
   const ka = isKa();
-  return shell("future", `${title(ka ? "სტრატეგიული მოდულები" : "Strategic modules", ka ? "ეს არის PerDM-ის მთავარი პროდუქტის ბირთვი: AI, გეოლოკაცია, კანონმდებლობა, wallet, ბარათები, პარტნიორები და ანგარიშგება." : "This is the core product vision for PerDM: AI, geolocation, legal rules, wallet, cards, partners, and reporting.")}
+  return shell("future", `${title(ka ? "სტრატეგიული მოდულები" : "Strategic modules", ka ? "ეს არის PerDM-ის მთავარი პროდუქტის ბირთვი: AI, გეოლოკაცია, კანონმდებლობა, საბანკო ბარათების მიბმა, პარტნიორები და ანგარიშგება." : "This is the core product vision for PerDM: AI, geolocation, legal rules, bank-card linking, partners, and reporting.")}
     <div class="grid-3">
       ${card(1, ka ? "AI ასისტენტი" : "AI assistant", ka ? "მარშრუტის, ხარჯის, ლიმიტის და დოკუმენტების რეკომენდაციები." : "Route, cost, limit, and document recommendations.")}
       ${card(2, ka ? "გეოლოკაცია" : "Geolocation", ka ? "სამუშაო ადგილიდან მანძილი, 12კმ აქტივაცია და 30კმ კანონის შემოწმება." : "Distance from workplace, 12 km activation, and 30 km legal checks.")}
-      ${card(3, ka ? "PerDM Wallet და ბარათები" : "PerDM Wallet and cards", ka ? "კომპანიის wallet, თანამშრომლის PerDM ბარათი და პირადი ბარათის მიბმა." : "Company wallet, employee PerDM card, and personal card linking.")}
+      ${card(3, ka ? "არსებული ბანკების ბარათები" : "Existing bank cards", ka ? "TBC, საქართველოს ბანკის, Liberty-ის და სხვა ბარათების მიბმა tokenized კავშირით." : "Tokenized linking for TBC, Bank of Georgia, Liberty, and other existing cards.")}
       ${card(4, ka ? "პარტნიორი შეთავაზებები" : "Partner offers", ka ? "სასტუმრო, საწვავი, კვება, cashback და სამივლინებო სერვისები." : "Hotels, fuel, meals, cashback, and travel services.")}
       ${card(5, ka ? "ავტომატური ანგარიშგება" : "Automated reporting", ka ? "ფორმები, ქვითრები, ტრანზაქციები და საგადასახადო ფორმატები." : "Forms, receipts, transactions, and tax-ready formats.")}
     </div>`);
@@ -967,7 +965,7 @@ function employeeOverview() {
     <div class="stats">
       ${stat(isKa() ? "ფორმის სტატუსი" : "Form status", state.missionFormSubmitted ? (isKa() ? "დადასტურებულია" : "Confirmed") : (isKa() ? "შესავსებია" : "To complete"), isKa() ? "ხელმოწერა სავალდებულოა" : "Signature required")}
       ${stat("Assigned budget", money(t.budget), "Batumi business trip")}
-      ${stat(isKa() ? "ბარათის ბალანსი" : "Card balance", money(t.budget - t.total - (state.paymentSimulated ? 28 : 0)), state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active"))}
+      ${stat(isKa() ? "მიბმული ბარათი" : "Linked card", state.employeeBankLinked ? "TBC Visa" : (isKa() ? "საჭიროა მიბმა" : "To connect"), state.employeeBankLinked ? (isKa() ? "სინქი აქტიურია" : "Sync active") : (isKa() ? "დააკავშირე ბარათი" : "Connect card"))}
       ${stat("Spent", money(t.total), "Card + cash")}
       ${stat("Remaining", money(t.budget - t.total), "Available budget")}
       ${stat("Receipts to upload", String(t.missing), "Required before report")}
@@ -977,7 +975,7 @@ function employeeOverview() {
       <section class="panel">
         <h3>${isKa() ? "შენი დავალებები" : "What you need to do"}</h3>
         ${attention(isKa() ? "მივლინების ფორმის შევსება" : "Complete mission form", isKa() ? "ფორმა უნდა შეივსოს და დადასტურდეს ხელმოწერით" : "Fill and confirm the form with signature", state.missionFormSubmitted ? (isKa() ? "შესრულებულია" : "Done") : (isKa() ? "სავალდებულო" : "Required"), "#/mission-form")}
-        ${attention(isKa() ? "ბარათის ბალანსის შემოწმება" : "Check card balance", isKa() ? "perDM ელექტრონული ბარათი მივლინებისთვის" : "perDM virtual card for this business trip", state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active"), "#/employee/card")}
+        ${attention(isKa() ? "ბარათის მიბმა" : "Connect card", isKa() ? "TBC/საქართველოს ბანკის არსებული ბარათი" : "Existing TBC/Bank of Georgia card", state.employeeBankLinked ? (isKa() ? "მიბმულია" : "Connected") : (isKa() ? "სავალდებულო" : "Required"), "#/employee/card")}
         ${attention("Upload missing receipt", "Taxi - 35 GEL, June 3", state.receiptAttached ? "Done" : "Needs receipt", "#/employee/receipts")}
         ${attention("Check expense list", "Confirm card and cash payments are correct", "Open", "#/employee/expenses")}
         ${attention("Submit trip report", "Send completed trip file to finance", "Pending", "#/employee/report")}
@@ -994,16 +992,16 @@ function employeeOverview() {
 function employeeCard() {
   const ka = isKa();
   const rows = [...cardTransactions, ...(state.paymentSimulated ? [["June 29", "Pharmacy", "Other", 28, "Pending review"]] : [])];
-  return `${title(ka ? "ჩემი PerDM ბარათი და პირადი ბარათი" : "My PerDM card and personal card", ka ? "თანამშრომელი ხედავს კომპანიის მიერ გამოყოფილ PerDM ბარათს და სურვილის შემთხვევაში აბამს საკუთარ TBC/საქართველოს ბანკის ბარათს tokenized კავშირით." : "The employee sees the company-funded PerDM card and can optionally connect their own TBC/Bank of Georgia card through a tokenized link.")}
+  return `${title(ka ? "ჩემი მიბმული საბანკო ბარათი" : "My linked bank card", ka ? "თანამშრომელი აბამს საკუთარ TBC/საქართველოს ბანკის/Liberty ბარათს tokenized კავშირით. PerDM არ ინახავს ფულს და არ უშვებს ბარათს." : "The employee connects their own TBC/Bank of Georgia/Liberty card through a tokenized link. PerDM does not hold money or issue cards.")}
     <div class="dash-grid">
       <section class="panel">
         ${virtualCard()}
         <div class="stats mini-stats">
-          ${stat(ka ? "ხელმისაწვდომია" : "Available", money(3000 - nino().total - (state.paymentSimulated ? 28 : 0)), ka ? "მივლინების ბალანსი" : "Trip balance")}
-          ${stat(ka ? "დღიური ლიმიტი" : "Daily limit", "500 GEL", ka ? "კომპანიის წესით" : "Company policy")}
+          ${stat(ka ? "დამტკიცებული ლიმიტი" : "Approved limit", money(3000), ka ? "კომპანიის წესით" : "Company policy")}
+          ${stat(ka ? "დახარჯულია" : "Spent", money(nino().total + (state.paymentSimulated ? 28 : 0)), ka ? "მიბმული ბარათიდან" : "From linked card")}
         </div>
         <div class="action-row">
-          <button class="btn primary" onclick="state.paymentSimulated=true;render()">${ka ? "გადახდის სიმულაცია" : "Simulate card payment"}</button>
+          <button class="btn primary" onclick="state.paymentSimulated=true;render()">${ka ? "ტრანზაქციის სიმულაცია" : "Simulate transaction"}</button>
         </div>
       </section>
       <section class="panel">
@@ -1142,7 +1140,7 @@ function employeeReceipts() {
 
 function employeeOffers() {
   const ka = isKa();
-  return `${title(ka ? "ჩემი ფასდაკლებები და ქეშბექი" : "My offers and cashback", ka ? "პარტნიორი ბიზნესების შეთავაზებები, რომლებიც perDM ბარათით გადახდისას მოქმედებს." : "Partner business offers available when paying with the perDM card.")}
+  return `${title(ka ? "ჩემი ფასდაკლებები და ქეშბექი" : "My offers and cashback", ka ? "პარტნიორი ბიზნესების შეთავაზებები, რომლებიც PerDM-ში მიბმული საბანკო ბარათით გადახდისას მოქმედებს." : "Partner business offers available when paying with a bank card linked in PerDM.")}
     <div class="stats">
       ${stat(ka ? "მიღებული ქეშბექი" : "Cashback earned", "18 GEL", ka ? "ამ მივლინებაზე" : "This trip")}
       ${stat(ka ? "დაზოგვა" : "Savings", "62 GEL", ka ? "პარტნიორებისგან" : "From partners")}
@@ -1169,18 +1167,18 @@ function partnerDashboard() {
     <main class="main">
       <div class="dash-top"><strong>${ka ? "პარტნიორი ბიზნესის პანელი · Rooms Hotel" : "Partner dashboard · Rooms Hotel"}</strong><div>${langToggle()} <button class="btn small" onclick="setRoute('#/demo')">${ka ? "დემოები" : "Demo flows"}</button></div></div>
       <div class="dash-content">
-        ${title(ka ? "პარტნიორი ბიზნესის მიმოხილვა" : "Partner business overview", ka ? "პარტნიორი ქმნის შეთავაზებებს perDM ბარათის მომხმარებლებისთვის და ხედავს ტრანზაქციებს." : "Partners create offers for perDM card users and track transactions.")}
+        ${title(ka ? "პარტნიორი ბიზნესის მიმოხილვა" : "Partner business overview", ka ? "პარტნიორი ქმნის შეთავაზებებს PerDM მომხმარებლებისთვის და ხედავს მიბმული ბარათებით შესრულებულ ტრანზაქციებს." : "Partners create offers for PerDM users and track transactions made with linked bank cards.")}
         <div class="stats">
-          ${stat(ka ? "აქტიური შეთავაზებები" : "Active offers", "3", ka ? "perDM ბარათზე" : "For perDM card")}
+          ${stat(ka ? "აქტიური შეთავაზებები" : "Active offers", "3", ka ? "მიბმულ ბარათებზე" : "For linked cards")}
           ${stat(ka ? "დღიური ტრანზაქციები" : "Daily transactions", "38", ka ? "დღეს" : "Today")}
           ${stat(ka ? "თვიური ბრუნვა" : "Monthly revenue", money(18900), ka ? "perDM მომხმარებლები" : "perDM users")}
-          ${stat(ka ? "გადახდის სტატუსი" : "Payout status", ka ? "დასარიცხია" : "Pending", ka ? "შემდეგი ჩარიცხვა" : "Next settlement")}
+          ${stat(ka ? "შეთავაზების სტატუსი" : "Offer status", ka ? "აქტიურია" : "Active", ka ? "პარტნიორის კამპანია" : "Partner campaign")}
         </div>
         <div class="dash-grid">
           <section class="panel">
             <h3>${ka ? "შეთავაზების შექმნა" : "Create offer"}</h3>
             <div class="form-grid">
-              ${field(ka ? "შეთავაზების სათაური" : "Offer title", "10% discount for perDM card users")}
+              ${field(ka ? "შეთავაზების სათაური" : "Offer title", "10% discount for PerDM linked-card users")}
               ${field(ka ? "კატეგორია" : "Category", "Hotel", "select")}
               ${field(ka ? "ფასდაკლების ტიპი" : "Discount type", "Percentage", "select")}
               ${field(ka ? "მნიშვნელობა" : "Value", "10%")}
