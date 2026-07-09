@@ -164,8 +164,17 @@ function expenses() {
   return rows;
 }
 
+function brandIcon() {
+  return `<svg class="brand-mark" viewBox="0 0 64 72" aria-hidden="true" focusable="false">
+    <path class="logo-pin" d="M32 2C16.5 2 4 14.5 4 30c0 20.7 28 40 28 40s28-19.3 28-40C60 14.5 47.5 2 32 2Z"/>
+    <circle class="logo-pin-center" cx="32" cy="30" r="18"/>
+    <rect class="logo-card" x="19" y="24" width="25" height="15" rx="3"/>
+    <rect class="logo-card-line" x="22" y="29" width="18" height="4" rx="1.5"/>
+  </svg>`;
+}
+
 function brand() {
-  return `<a class="brand" href="#/"><span class="brand-mark"></span><span class="brand-word">perDM</span></a>`;
+  return `<a class="brand" href="#/">${brandIcon()}<span class="brand-word">PerDM</span></a>`;
 }
 
 function setRoute(route) {
@@ -678,7 +687,7 @@ function budgetsPage() {
 
 function virtualCard() {
   return `<div class="virtual-card ${state.cardFrozen ? "frozen" : ""}">
-    <div class="brand"><span class="brand-mark"></span><span class="brand-word">perDM</span></div>
+    <div class="brand">${brandIcon()}<span class="brand-word">PerDM</span></div>
     <div>
       <div class="card-number">**** **** **** 4829</div>
       <div class="virtual-card-row"><span>Nino Beridze</span><span>${state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active")}</span></div>
