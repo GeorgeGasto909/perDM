@@ -463,6 +463,47 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
   border-color: #ffc6cf;
   color: #b42336;
 }
+.bank-source-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.bank-source {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  border: 1px solid var(--line);
+  background: #fbfdff;
+  border-radius: 8px;
+  padding: 14px;
+}
+.bank-source span {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 13px;
+}
+.bank-source > div:last-child {
+  text-align: right;
+}
+.wallet-flow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.wallet-flow div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7fafc;
+  padding: 14px;
+}
+.wallet-flow span {
+  display: block;
+  color: var(--muted);
+  margin-top: 6px;
+}
 .action-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
 .trip-hero {
   display: flex;

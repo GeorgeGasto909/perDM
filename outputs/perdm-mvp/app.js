@@ -15,6 +15,8 @@ const state = {
   locationShared: true,
   distanceKm: 18.4,
   limitAlert: false,
+  bankLinked: true,
+  walletTopUp: false,
 };
 
 const company = {
@@ -118,6 +120,11 @@ const cardTransactions = [
   ["June 5", "Fuel Station", "Fuel", 160, "Approved"],
   ["June 12", "Hotel Batumi", "Hotel", 720, "Pending review"],
   ["June 18", "Restaurant", "Meals", 95, "Pending review"],
+];
+
+const bankSources = [
+  ["TBC Bank", "Business Visa", "**** 2048", 12000, "Connected"],
+  ["Bank of Georgia", "Corporate account", "GE29 BG00 **** 7710", 6400, "Ready"],
 ];
 
 const partnerOffers = [
@@ -493,14 +500,42 @@ function paymentsPage() {
   const ka = isKa();
   const simulated = state.paymentSimulated ? [["June 29", "Pharmacy", "Other", 28, "Pending review"]] : [];
   const rows = [...cardTransactions, ...simulated];
-  return shell("payments", `${title(ka ? "Wallet და ელექტრონული ბარათები" : "Wallet & virtual cards", ka ? "კომპანია ავსებს wallet-ს, ანაწილებს თანხას თანამშრომლების perDM ბარათებზე და აკონტროლებს ტრანზაქციებს." : "The company funds a wallet, assigns balances to employee perDM cards, and monitors every transaction.", `<button class="btn primary" onclick="state.paymentSimulated=true;render()">${ka ? "გადახდის სიმულაცია" : "Simulate payment"}</button>`)}
+  const walletBalance = 18400 + (state.walletTopUp ? 5000 : 0);
+  return shell("payments", `${title(ka ? "perDM Wallet და ელექტრონული ბარათები" : "perDM Wallet & virtual cards", ka ? "კომპანია აბამს TBC/საქართველოს ბანკის ბარათს ან ანგარიშს, ავსებს perDM Wallet-ს და იქიდან ანაწილებს თანხას თანამშრომლების ბარათებზე." : "The company connects a TBC/Bank of Georgia card or account, funds the perDM Wallet, and distributes money to employee cards.", `<button class="btn primary" onclick="state.walletTopUp=true;render()">${ka ? "Wallet-ის შევსება" : "Top up wallet"}</button>`)}
+    ${state.walletTopUp ? `<div class="trip-banner"><span>${ka ? "Wallet შეივსო 5,000 GEL-ით მიბმული საბანკო წყაროდან." : "Wallet topped up by 5,000 GEL from a linked bank source."}</span>${badge(ka ? "დადასტურებულია" : "Confirmed")}</div>` : ""}
     <div class="stats">
-      ${stat(ka ? "კომპანიის wallet" : "Company wallet", money(18400), ka ? "ხელმისაწვდომი თანხა" : "Available funds")}
+      ${stat(ka ? "perDM Wallet" : "perDM Wallet", money(walletBalance), ka ? "ხელმისაწვდომი თანხა" : "Available funds")}
+      ${stat(ka ? "მიბმული წყაროები" : "Linked sources", state.bankLinked ? "2" : "0", "TBC / BOG")}
       ${stat(ka ? "გამოყოფილი ბიუჯეტი" : "Allocated to cards", money(6400), ka ? "5 თანამშრომელი" : "5 employees")}
       ${stat(ka ? "Nino-ს ბარათი" : "Nino's card", money(3000 - nino().total - (state.paymentSimulated ? 28 : 0)), state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"))}
       ${stat(ka ? "თვიური card spend" : "Monthly card spend", money(8420), ka ? "mock ტრანზაქციები" : "Mock transactions")}
     </div>
     <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "მიბმული ბანკები და ბარათები" : "Linked banks and cards"}</h3>
+        <p class="section-lead">${ka ? "რეალურ პროდუქტში აქ იქნებოდა ბანკის/გადახდის პროვაიდერის უსაფრთხო ავტორიზაცია. perDM ინახავს მხოლოდ token-ს და არა სრულ ბარათის მონაცემებს." : "In the real product this would use secure bank/payment-provider authorization. perDM stores only a token, not full card data."}</p>
+        <div class="bank-source-list">
+          ${bankSources.map((source) => bankSource(source, ka)).join("")}
+        </div>
+        <div class="action-row">
+          <button class="btn primary" onclick="state.bankLinked=true;render()">${ka ? "TBC-ის მიბმა" : "Connect TBC"}</button>
+          <button class="btn" onclick="state.bankLinked=true;render()">${ka ? "საქართველოს ბანკის მიბმა" : "Connect BOG"}</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "Wallet მოძრაობა" : "Wallet movement"}</h3>
+        <div class="wallet-flow">
+          <div><strong>${ka ? "ბანკი / ბარათი" : "Bank / card"}</strong><span>TBC, BOG</span></div>
+          <div><strong>${ka ? "perDM Wallet" : "perDM Wallet"}</strong><span>${money(walletBalance)}</span></div>
+          <div><strong>${ka ? "თანამშრომლის ბარათები" : "Employee cards"}</strong><span>${money(6400)}</span></div>
+        </div>
+        <div class="form-grid">
+          ${field(ka ? "შევსების წყარო" : "Funding source", "TBC Business Visa", "select")}
+          ${field(ka ? "თანხა" : "Amount", "5,000 GEL")}
+          ${field(ka ? "დანიშნულება" : "Purpose", ka ? "სამივლინებო Wallet" : "Business travel wallet")}
+          ${field(ka ? "დადასტურება" : "Confirmation", ka ? "2FA / ბანკის თანხმობა" : "2FA / bank consent", "select")}
+        </div>
+      </section>
       <section class="panel">
         <h3>${ka ? "perDM Business Travel Card" : "perDM Business Travel Card"}</h3>
         ${virtualCard()}
@@ -525,6 +560,13 @@ function paymentsPage() {
       <h3>${ka ? "ბარათის ტრანზაქციები" : "Card transactions"}</h3>
       ${paymentTable(rows)}
     </section>`);
+}
+
+function bankSource(source, ka) {
+  return `<div class="bank-source">
+    <div><strong>${source[0]}</strong><span>${source[1]} · ${source[2]}</span></div>
+    <div><strong>${money(source[3])}</strong>${badge(ka ? (source[4] === "Connected" ? "მიბმულია" : "მზადაა") : source[4])}</div>
+  </div>`;
 }
 
 function policiesPage() {
