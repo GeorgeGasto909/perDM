@@ -315,6 +315,8 @@ button { cursor: pointer; }
 .app-shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
 .employee-shell .sidebar { background: #fbfdff; }
 .employee-shell .side-link.active, .employee-shell .side-link:hover { background: #eaf8f5; color: var(--teal); }
+.partner-shell .sidebar { background: #fcfdff; }
+.partner-shell .side-link.active, .partner-shell .side-link:hover { background: #f0efff; color: var(--violet); }
 .sidebar {
   border-right: 1px solid var(--line);
   background: white;
@@ -410,6 +412,22 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
   gap: 12px;
   align-items: center;
   margin-top: 16px;
+}
+.geo-banner {
+  border: 1px solid #b8eadf;
+  background: #effbf8;
+  color: #0f725d;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+.geo-banner strong,
+.geo-banner span {
+  display: block;
+}
+.geo-banner span {
+  margin-top: 5px;
+  color: #226e60;
 }
 .action-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
 .trip-hero {

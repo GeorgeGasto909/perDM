@@ -10,6 +10,8 @@ const state = {
   lang: "ka",
   cardFrozen: false,
   paymentSimulated: false,
+  geoActive: true,
+  budgetDistributed: false,
 };
 
 const company = {
@@ -104,6 +106,13 @@ const cardTransactions = [
   ["June 5", "Fuel Station", "Fuel", 160, "Approved"],
   ["June 12", "Hotel Batumi", "Hotel", 720, "Pending review"],
   ["June 18", "Restaurant", "Meals", 95, "Pending review"],
+];
+
+const partnerOffers = [
+  ["Rooms Hotel", "Hotel", "10% discount", "18 GEL saved", "Active"],
+  ["Wissol", "Fuel", "5% cashback", "8 GEL cashback", "Active"],
+  ["Stamba Cafe", "Meals", "15% discount", "14 GEL saved", "Active"],
+  ["Terminal", "Coworking", "Corporate rate", "22 GEL saved", "Scheduled"],
 ];
 
 const app = document.getElementById("app");
@@ -220,6 +229,9 @@ function landing() {
           ${card(1, ka ? "კომპანია რეგისტრირდება" : "Company registers", ka ? "დამსაქმებელი ქმნის perDM-ის კომპანიის ანგარიშს და ამატებს თანამშრომლებს." : "The employer creates a perDM company account and sets basic accounting rules.")}
           ${card(2, ka ? "თანამშრომელი იღებს ლინკს და ბარათს" : "Employees receive login and card", ka ? "თანამშრომელი ავსებს ფორმას, იღებს მივლინების ბიუჯეტს ელექტრონულ ბარათზე და ტვირთავს ქვითრებს." : "Each employee gets access to their trip, virtual card budget, receipt upload, and report status.")}
           ${card(3, ka ? "დამსაქმებელი ხედავს გადახდებს" : "Company sees payments", ka ? "დამსაქმებელი ხედავს ფორმის სტატუსს, ბარათის ტრანზაქციებს, ქვითრებს და ანგარიშებს." : "Finance managers monitor forms, card transactions, receipts, approvals, and exports.")}
+          ${card(4, ka ? "გეოლოკაცია ააქტიურებს მივლინებას" : "Geolocation activates the trip", ka ? "თუ თანამშრომელი ოფისიდან 12კმ-ზე მეტ მანძილზეა, სისტემა აჩვენებს აქტიურ მივლინებას." : "If the employee is more than 12 km from the office, the trip becomes active in the interface.")}
+          ${card(5, ka ? "პარტნიორები ქმნიან შეთავაზებებს" : "Partners create offers", ka ? "სასტუმროები, საწვავი და კვების ობიექტები ქმნიან ფასდაკლებებს perDM ბარათისთვის." : "Hotels, fuel stations, and restaurants can create discounts for perDM card users.")}
+          ${card(6, ka ? "ქეშბექი და ბონუსი" : "Cashback and bonus tracking", ka ? "თანამშრომელი ხედავს მიღებულ ქეშბექს, კომპანია კი ჯამურ დაზოგვას." : "Employees see earned cashback, while the company sees total savings.")}
         </div>
       </div></section>
       <section class="section mission-highlight">
@@ -239,8 +251,8 @@ function landing() {
       </section>
       <section class="band"><div class="section" id="workflow">
         <h2>perDM turns every business trip into a ready-to-export expense file</h2>
-        <p class="section-lead">The company creates a trip, expenses are collected under that trip, receipts are attached, missing documents are flagged, and the accountant downloads the full report with one click.</p>
-        <div class="grid-5">${["Create business trip", "Assign employee and budget", "Collect card and cash expenses", "Attach receipts and verify documents", "Export full report"].map((x, i) => step(i + 1, x)).join("")}</div>
+        <p class="section-lead">${ka ? "კომპანია ქმნის მივლინებას, აყენებს პოლიტიკას, ანაწილებს ბიუჯეტს, თანამშრომლის სტატუსი აქტიურდება 12კმ+ გეოლოკაციით, გადახდები მიდის perDM ბარათით, ქვითრები ერთვის და ანგარიში ექსპორტირდება." : "The company creates a trip, sets policy, distributes budget, trip status activates at 12 km+, payments happen through the perDM card, receipts attach, and reports export."}</p>
+        <div class="grid-5">${(ka ? ["კომპანია ქმნის მივლინებას", "აყენებს პოლიტიკას და 12კმ წესს", "ანაწილებს ბიუჯეტს ბარათებზე", "თანამშრომელი იხდის და ტვირთავს ქვითრებს", "ანგარიში ექსპორტირდება"] : ["Create business trip", "Set policy and 12 km rule", "Distribute budget to cards", "Employee pays and uploads receipts", "Export full report"]).map((x, i) => step(i + 1, x)).join("")}</div>
       </div></section>
       <section class="section" id="benefits">
         <h2>Built for accountants and finance teams</h2>
@@ -279,6 +291,7 @@ function demo() {
     <div class="grid-2 demo-choice-grid">
       ${demoCard(ka ? "კომპანიის ხედვა" : "Company view", ka ? "კომპანია ხედავს თანამშრომლებს, მივლინების ფორმებს, ბიუჯეტებს, ხარჯებს, ქვითრებს და ანგარიშებს." : "The company sees all employees, trips, budgets, card and cash expenses, missing receipts, approvals, and export-ready reports.", "#/dashboard", ka ? "კომპანიის დემო" : "Open company demo")}
       ${demoCard(ka ? "თანამშრომლის ხედვა" : "Employee view", ka ? "თანამშრომელი ხედავს საკუთარ მივლინებას, ფორმას, ბიუჯეტს, ხარჯებს, ასატვირთ ქვითრებს და დადასტურების სტატუსს." : "The employee sees only their assigned trip, remaining budget, personal expenses, missing receipt tasks, and report submission status.", "#/employee", ka ? "თანამშრომლის დემო" : "Open employee demo")}
+      ${demoCard(ka ? "პარტნიორი ბიზნესის ხედვა" : "Partner business view", ka ? "პარტნიორი ქმნის შეთავაზებებს perDM ბარათზე, ხედავს ტრანზაქციებს და გადახდის მიღების სტატუსს." : "The partner creates perDM card offers, sees transactions, and tracks payout status.", "#/partner", ka ? "პარტნიორის დემო" : "Open partner demo")}
     </div>
     <section class="panel demo-compare">
       <h3>${ka ? "როგორ უკავშირდება ორი დემო ერთმანეთს" : "How the two demos connect"}</h3>
@@ -290,6 +303,10 @@ function demo() {
         <div>
           <h4>${ka ? "თანამშრომელი" : "Employee"}</h4>
           <p class="section-lead">${ka ? "შედის თავის პორტალში, ავსებს მივლინების ფორმას, აწერს ხელს, ტვირთავს ქვითრებს და აბარებს ინფორმაციას კომპანიას." : "Logs in separately, sees their own trip and budget, uploads missing receipts, and submits the trip file back to the company."}</p>
+        </div>
+        <div>
+          <h4>${ka ? "პარტნიორი ბიზნესი" : "Partner business"}</h4>
+          <p class="section-lead">${ka ? "ქმნის ფასდაკლებებს, ხედავს დღიურ/თვიურ ტრანზაქციებს და გადახდის სტატუსს." : "Creates discounts, sees daily/monthly transactions, and tracks payment status."}</p>
         </div>
       </div>
     </section>
@@ -313,6 +330,7 @@ function loginPage() {
       <div class="grid-2">
         ${portalCard(ka ? "კომპანია / ფინანსისტი" : "Company / Finance Manager", ka ? "მართავს თანამშრომლებს, მივლინებებს, ფორმებს, ბიუჯეტებს, ხარჯებს, ქვითრებს და ანგარიშებს." : "Manage employees, trips, budgets, expenses, receipts, approvals, and reports.", "#/dashboard", ka ? "კომპანიის პანელი" : "Open company dashboard")}
         ${portalCard(ka ? "თანამშრომელი" : "Employee", ka ? "ხედავს საკუთარ მივლინებას, ბიუჯეტს, ფორმას, ხარჯებს და ასატვირთ დოკუმენტებს." : "View assigned budget, trip expenses, missing receipts, and upload documents.", "#/employee", ka ? "თანამშრომლის პორტალი" : "Open employee portal")}
+        ${portalCard(ka ? "პარტნიორი ბიზნესი" : "Partner Business", ka ? "ქმნის შეთავაზებებს, ხედავს perDM ტრანზაქციებს და გადახდის სტატუსს." : "Create offers, view perDM transactions, and track payout status.", "#/partner", ka ? "პარტნიორის პანელი" : "Open partner dashboard")}
       </div>
       <p class="auth-note">${ka ? "დემო წვდომები mock-ია. რეალური ავტორიზაცია ჯერ არ არის ჩართული." : "Demo credentials are mocked for the prototype. No real authentication is connected yet."}</p>
     </div>
@@ -388,6 +406,8 @@ const links = [
   ["overview", "Overview", "#/dashboard"],
   ["missionForms", "Mission Forms", "#/dashboard/mission-forms"],
   ["payments", "Wallet & Cards", "#/dashboard/payments"],
+  ["policies", "Travel Policies", "#/dashboard/policies"],
+  ["budgets", "Budgets", "#/dashboard/budgets"],
   ["trips", "Business Trips", "#/dashboard/trips"],
   ["employees", "Employees", "#/dashboard/employees"],
   ["expenses", "Expenses", "#/dashboard/expenses"],
@@ -412,7 +432,7 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
@@ -486,6 +506,50 @@ function paymentsPage() {
     <section class="panel table-wrap" style="margin-top:16px">
       <h3>${ka ? "ბარათის ტრანზაქციები" : "Card transactions"}</h3>
       ${paymentTable(rows)}
+    </section>`);
+}
+
+function policiesPage() {
+  const ka = isKa();
+  return shell("policies", `${title(ka ? "სამივლინებო პოლიტიკა" : "Travel policies", ka ? "კომპანია განსაზღვრავს გეოლოკაციის, ბარათის ლიმიტების, კატეგორიების და ქვითრების წესებს." : "The company defines geolocation, card limits, categories, and receipt rules.", `<button class="btn primary">${ka ? "პოლიტიკის შენახვა" : "Save policy"}</button>`)}
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "გეოლოკაციის აქტივაცია" : "Geolocation activation"}</h3>
+        <div class="geo-banner">
+          <strong>${ka ? "მივლინება აქტიურია" : "Business trip active"}</strong>
+          <span>${ka ? "თანამშრომელი ოფისიდან 18.4კმ-ზეა. პოლიტიკის ზღვარი: 12კმ." : "Employee is 18.4 km from office. Policy threshold: 12 km."}</span>
+        </div>
+        <div class="map-mock"><span class="route-line"></span><span class="pin office"></span><span class="pin dest"></span></div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "წესები და ლიმიტები" : "Rules and limits"}</h3>
+        <div class="form-grid">
+          ${field(ka ? "მინ. მანძილი მივლინების აქტივაციისთვის" : "Minimum distance for trip activation", "12 km")}
+          ${field(ka ? "დღიური ლიმიტი" : "Daily limit", "500 GEL")}
+          ${field(ka ? "სასტუმროს ლიმიტი" : "Hotel limit", "250 GEL")}
+          ${field(ka ? "საკვების ლიმიტი" : "Meals limit", "70 GEL")}
+          ${field(ka ? "საწვავის ლიმიტი" : "Fuel limit", "90 GEL")}
+          ${field(ka ? "ქვითარი სავალდებულოა ზემოთ" : "Receipt required above", "40 GEL")}
+          ${field(ka ? "ავტორიზაციის დონეები" : "Approval roles", "Admin, Accountant, Employee", "select")}
+          ${field("2FA", ka ? "ჩართული" : "Enabled", "select")}
+        </div>
+      </section>
+    </div>`);
+}
+
+function budgetsPage() {
+  const ka = isKa();
+  return shell("budgets", `${title(ka ? "ბიუჯეტის განაწილება" : "Budget distribution", ka ? "ორგანიზაცია ანაწილებს თანხას ერთდროულად ან ინდივიდუალურად თანამშრომლების perDM ბარათებზე." : "The organization distributes funds in bulk or individually to employee perDM cards.", `<button class="btn primary" onclick="state.budgetDistributed=true;render()">${ka ? "ერთდროულად განაწილება" : "Distribute in bulk"}</button>`)}
+    <div class="stats">
+      ${stat(ka ? "საერთო ბიუჯეტი" : "Total travel budget", money(18400), ka ? "თვიური" : "Monthly")}
+      ${stat(ka ? "განაწილებულია" : "Distributed", state.budgetDistributed ? money(7200) : money(6400), ka ? "ბარათებზე" : "To cards")}
+      ${stat(ka ? "დარჩენილი pool" : "Remaining pool", state.budgetDistributed ? money(11200) : money(12000), ka ? "გასანაწილებელი" : "Unassigned")}
+      ${stat(ka ? "ქეშბექი" : "Cashback", money(1260), ka ? "ამ თვეში" : "This month")}
+    </div>
+    <section class="panel table-wrap" style="margin-top:16px">
+      <table><thead><tr><th>${ka ? "თანამშრომელი" : "Employee"}</th><th>${ka ? "დეპარტამენტი" : "Department"}</th><th>${ka ? "ბიუჯეტი" : "Budget"}</th><th>${ka ? "ბარათზე" : "On card"}</th><th>${ka ? "დახარჯული" : "Spent"}</th><th>${ka ? "ქმედება" : "Action"}</th></tr></thead><tbody>
+        ${employees.map((e, i) => `<tr><td><strong>${e[0]}</strong></td><td>${e[2]}</td><td>${money([3000, 900, 600, 1200, 700][i])}</td><td>${badge(i < 3 || state.budgetDistributed ? (ka ? "ჩარიცხულია" : "Loaded") : (ka ? "ელოდება" : "Pending"))}</td><td>${money(e[5])}</td><td><button class="btn small">${ka ? "ინდივიდუალურად" : "Assign individual"}</button></td></tr>`).join("")}
+      </tbody></table>
     </section>`);
 }
 
@@ -686,6 +750,7 @@ const employeeLinks = [
   ["trip", "My Trip", "#/employee/trip"],
   ["expenses", "My Expenses", "#/employee/expenses"],
   ["receipts", "Upload Receipts", "#/employee/receipts"],
+  ["offers", "Offers & Cashback", "#/employee/offers"],
   ["report", "Submit Report", "#/employee/report"],
 ];
 
@@ -710,6 +775,7 @@ function employeePortal(view = "overview") {
     trip: employeeTrip,
     expenses: employeeExpenses,
     receipts: employeeReceipts,
+    offers: employeeOffers,
     report: employeeReport,
   };
   return employeeShell(view, pages[view]());
@@ -825,7 +891,8 @@ function missionFormPreview() {
 
 function employeeTrip() {
   const t = nino();
-  return `${title("My Batumi trip", "Trip details assigned by the company.")}
+  const ka = isKa();
+  return `${title(ka ? "ჩემი Batumi მივლინება" : "My Batumi trip", ka ? "მივლინების სტატუსი გეოლოკაციაზე დაყრდნობით ავტომატურად აქტიურდება." : "Trip status is automatically activated based on geolocation.")}
     <section class="panel trip-hero">
       <div>
         <h3>${t.destination} business trip</h3>
@@ -834,7 +901,19 @@ function employeeTrip() {
       </div>
       <div class="budget-box"><span>Remaining budget</span><strong>${money(t.budget - t.total)}</strong><small>${money(t.total)} spent</small></div>
     </section>
-    <div class="trip-banner"><span>${t.missing} receipt${t.missing > 1 ? "s are" : " is"} still needed before finance can finalize the report.</span>${badge(t.report)}</div>`;
+    <div class="trip-banner"><span>${ka ? "მივლინება ავტომატურად აქტიურია: ოფისიდან 18.4კმ, ზღვარი 12კმ." : "Business trip automatically active: 18.4 km from office, threshold 12 km."}</span>${badge(ka ? "მოგზაურობა აქტიურია" : "Trip active")}</div>
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "გეოლოკაციის სიმულაცია" : "Geolocation simulation"}</h3>
+        <div class="map-mock"><span class="route-line"></span><span class="pin office"></span><span class="pin dest"></span></div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "სტატუსის წესები" : "Status rules"}</h3>
+        ${stat(ka ? "ოფისი" : "Office", "Tbilisi HQ", ka ? "საწყისი წერტილი" : "Start point")}
+        ${stat(ka ? "მიმდინარე მანძილი" : "Current distance", "18.4 km", ka ? "აქტიურდება 12კმ+" : "Activates at 12 km+")}
+        ${stat(ka ? "ქვითრები" : "Receipts", `${t.missing}`, ka ? "დარჩენილი ასატვირთი" : "Still required")}
+      </section>
+    </div>`;
 }
 
 function employeeExpenses() {
@@ -850,6 +929,77 @@ function employeeReceipts() {
       <section class="panel"><h3>Receipts still needed</h3>${missing.length ? missing.map((row) => missingCard(row)).join("") : `<div class="empty">All required receipts are attached.</div>`}</section>
       <section class="panel"><h3>Upload receipt</h3><div class="upload"><strong>${state.employeeReceiptUploaded ? "Receipt uploaded" : "Choose receipt image"}</strong><p>${state.employeeReceiptUploaded ? "Finance can now see this document in the company dashboard." : "Mock upload area for the employee account."}</p></div><br><div class="form-grid">${field("Select expense", "Taxi - 35 GEL", "select")}${field("Comment", "Taxi receipt from June 3")}</div><br><button class="btn primary" onclick="state.employeeReceiptUploaded=true;state.receiptAttached=true;render()">Upload and send to finance</button></section>
     </div>`;
+}
+
+function employeeOffers() {
+  const ka = isKa();
+  return `${title(ka ? "ჩემი ფასდაკლებები და ქეშბექი" : "My offers and cashback", ka ? "პარტნიორი ბიზნესების შეთავაზებები, რომლებიც perDM ბარათით გადახდისას მოქმედებს." : "Partner business offers available when paying with the perDM card.")}
+    <div class="stats">
+      ${stat(ka ? "მიღებული ქეშბექი" : "Cashback earned", "18 GEL", ka ? "ამ მივლინებაზე" : "This trip")}
+      ${stat(ka ? "დაზოგვა" : "Savings", "62 GEL", ka ? "პარტნიორებისგან" : "From partners")}
+      ${stat(ka ? "აქტიური შეთავაზებები" : "Active offers", "3", ka ? "ახლოს შენთან" : "Near you")}
+    </div>
+    <div class="grid-4">
+      ${partnerOffers.map((o) => `<article class="feature"><div class="icon">%</div><h3>${o[0]}</h3><p>${o[1]} · ${o[2]} · ${o[3]}</p><br><button class="btn small">${ka ? "გამოყენება" : "Use offer"}</button></article>`).join("")}
+    </div>`;
+}
+
+function partnerDashboard() {
+  const ka = isKa();
+  return `<div class="app-shell partner-shell">
+    <aside class="sidebar">
+      ${brand()}
+      <nav class="side-nav">
+        <button class="side-link active"><span>⌂</span>${ka ? "მიმოხილვა" : "Overview"}</button>
+        <button class="side-link"><span>%</span>${ka ? "შეთავაზებები" : "Offers"}</button>
+        <button class="side-link"><span>≡</span>${ka ? "ტრანზაქციები" : "Transactions"}</button>
+        <button class="side-link"><span>↧</span>${ka ? "გადახდები" : "Payments"}</button>
+        <button class="side-link"><span>□</span>${ka ? "პროფილი" : "Profile"}</button>
+      </nav>
+    </aside>
+    <main class="main">
+      <div class="dash-top"><strong>${ka ? "პარტნიორი ბიზნესის პანელი · Rooms Hotel" : "Partner dashboard · Rooms Hotel"}</strong><div>${langToggle()} <button class="btn small" onclick="setRoute('#/demo')">${ka ? "დემოები" : "Demo flows"}</button></div></div>
+      <div class="dash-content">
+        ${title(ka ? "პარტნიორი ბიზნესის მიმოხილვა" : "Partner business overview", ka ? "პარტნიორი ქმნის შეთავაზებებს perDM ბარათის მომხმარებლებისთვის და ხედავს ტრანზაქციებს." : "Partners create offers for perDM card users and track transactions.")}
+        <div class="stats">
+          ${stat(ka ? "აქტიური შეთავაზებები" : "Active offers", "3", ka ? "perDM ბარათზე" : "For perDM card")}
+          ${stat(ka ? "დღიური ტრანზაქციები" : "Daily transactions", "38", ka ? "დღეს" : "Today")}
+          ${stat(ka ? "თვიური ბრუნვა" : "Monthly revenue", money(18900), ka ? "perDM მომხმარებლები" : "perDM users")}
+          ${stat(ka ? "გადახდის სტატუსი" : "Payout status", ka ? "დასარიცხია" : "Pending", ka ? "შემდეგი ჩარიცხვა" : "Next settlement")}
+        </div>
+        <div class="dash-grid">
+          <section class="panel">
+            <h3>${ka ? "შეთავაზების შექმნა" : "Create offer"}</h3>
+            <div class="form-grid">
+              ${field(ka ? "შეთავაზების სათაური" : "Offer title", "10% discount for perDM card users")}
+              ${field(ka ? "კატეგორია" : "Category", "Hotel", "select")}
+              ${field(ka ? "ფასდაკლების ტიპი" : "Discount type", "Percentage", "select")}
+              ${field(ka ? "მნიშვნელობა" : "Value", "10%")}
+              ${field(ka ? "მოქმედებს დან" : "Valid from", "2026-07-09")}
+              ${field(ka ? "მოქმედებს მდე" : "Valid to", "2026-08-09")}
+            </div>
+            <br><button class="btn primary">${ka ? "შეთავაზების შენახვა" : "Save offer"}</button>
+          </section>
+          <section class="panel">
+            <h3>${ka ? "ბიზნეს პროფილი" : "Business profile"}</h3>
+            <div class="form-grid">
+              ${field(ka ? "ბიზნესის სახელი" : "Business name", "Rooms Hotel")}
+              ${field(ka ? "მისამართი" : "Address", "Tbilisi, Kostava 14")}
+              ${field(ka ? "კატეგორია" : "Category", "Hotel", "select")}
+              ${field(ka ? "სამუშაო საათები" : "Working hours", "24/7")}
+            </div>
+          </section>
+        </div>
+        <section class="panel table-wrap" style="margin-top:16px">
+          <h3>${ka ? "perDM ტრანზაქციები პარტნიორთან" : "perDM partner transactions"}</h3>
+          <table><thead><tr><th>${ka ? "თარიღი" : "Date"}</th><th>${ka ? "მომხმარებელი" : "User"}</th><th>${ka ? "კომპანია" : "Company"}</th><th>${ka ? "თანხა" : "Amount"}</th><th>${ka ? "ფასდაკლება" : "Discount"}</th><th>${ka ? "სტატუსი" : "Status"}</th></tr></thead><tbody>
+            <tr><td>June 1</td><td>Nino Beridze</td><td>${company.name}</td><td>${money(720)}</td><td>72 GEL</td><td>${badge(ka ? "დადასტურებულია" : "Settled")}</td></tr>
+            <tr><td>June 12</td><td>Nino Beridze</td><td>${company.name}</td><td>${money(720)}</td><td>72 GEL</td><td>${badge(ka ? "დასარიცხია" : "Pending")}</td></tr>
+          </tbody></table>
+        </section>
+      </div>
+    </main>
+  </div>`;
 }
 
 function employeeReport() {
@@ -897,6 +1047,8 @@ function render() {
   if (hash === "#/dashboard") html = dashboard();
   if (hash === "#/dashboard/mission-forms") html = missionFormsPage();
   if (hash === "#/dashboard/payments") html = paymentsPage();
+  if (hash === "#/dashboard/policies") html = policiesPage();
+  if (hash === "#/dashboard/budgets") html = budgetsPage();
   if (hash === "#/dashboard/trips") html = tripsPage();
   if (hash.startsWith("#/dashboard/trips/")) html = tripDetail();
   if (hash === "#/dashboard/employees") html = employeesPage();
@@ -911,7 +1063,9 @@ function render() {
   if (hash === "#/employee/trip") html = employeePortal("trip");
   if (hash === "#/employee/expenses") html = employeePortal("expenses");
   if (hash === "#/employee/receipts") html = employeePortal("receipts");
+  if (hash === "#/employee/offers") html = employeePortal("offers");
   if (hash === "#/employee/report") html = employeePortal("report");
+  if (hash === "#/partner") html = partnerDashboard();
   app.innerHTML = html;
   window.scrollTo(0, 0);
 }
