@@ -17,6 +17,7 @@ const state = {
   limitAlert: false,
   bankLinked: true,
   walletTopUp: false,
+  employeeBankLinked: false,
 };
 
 const company = {
@@ -222,9 +223,9 @@ function landing() {
     <main>
       <section class="hero">
         <div>
-          <div class="eyebrow">${ka ? "მივლინების დოკუმენტაცია და ხარჯების კონტროლი" : "Business travel expense documentation"}</div>
-          <h1>${ka ? "მივლინების ფორმები და ხარჯები ერთ სივრცეში" : "Business trip expenses, organized in one place"}</h1>
-          <p>${ka ? "perDM ეხმარება კომპანიებს სამუშაო ადგილის ლოკაციაზე, კილომეტრებზე, მივლინების ფორმებზე, ელექტრონულ ბარათებზე, გადახდებზე, ქვითრებსა და ანგარიშებზე დაფუძნებული პროცესის მართვაში." : "perDM helps companies manage workplace location, distance-based travel rules, business trip forms, virtual cards, payments, receipts, and reports in one connected platform."}</p>
+          <div class="eyebrow">${ka ? "AI, გეოლოკაცია და კანონთან შესაბამისი მივლინებები" : "AI, geolocation, and compliant business travel"}</div>
+          <h1>${ka ? "PerDM არის ჭკვიანი პლატფორმა მივლინების სამართავად" : "PerDM is the smart platform for business travel"}</h1>
+          <p>${ka ? "PerDM ხელოვნური ინტელექტით, გეოლოკაციით და შიდა კანონმდებლობის წესებით ამარტივებს მივლინებას, აოპტიმიზებს მარშრუტებსა და ხარჯებს, ავტომატურად ამზადებს ანგარიშებს და აკავშირებს კომპანიებს, თანამშრომლებსა და სამივლინებო სერვისის მიმწოდებლებს." : "PerDM uses AI, geolocation, and local travel rules to simplify business trips, optimize routes and costs, automate reports, and connect companies, employees, and travel service providers."}</p>
           <div class="hero-actions">
             <button class="btn primary" onclick="setRoute('#/demo')">${ka ? "დემოს ნახვა" : "View demo"}</button>
             <button class="btn" onclick="setRoute('#/signup')">${ka ? "კომპანიის რეგისტრაცია" : "Register company"}</button>
@@ -237,30 +238,31 @@ function landing() {
             <button class="btn small primary" onclick="setRoute('#/mission-form')">${ka ? "ფორმის ლინკი" : "Form link"}</button>
           </div>
           <div class="mini-grid">
-            ${mini(ka ? "კომპანიის ანგარიში" : "Company account", "Demo Company LLC")}
-            ${mini(ka ? "თანამშრომლები" : "Employees", "5 active users")}
-            ${mini(ka ? "ელ. ბარათის ბალანსი" : "Virtual card balance", "3,000 GEL")}
-            ${mini(ka ? "მივლინების ფორმა" : "Mission form", state.missionFormSubmitted ? (ka ? "დადასტურებულია" : "Confirmed") : (ka ? "გასაგზავნია" : "To send"))}
+            ${mini(ka ? "AI რეკომენდაცია" : "AI recommendation", ka ? "მარშრუტი + ბიუჯეტი" : "Route + budget")}
+            ${mini(ka ? "ლოკაცია" : "Location", `${state.distanceKm} km`)}
+            ${mini(ka ? "Wallet / ბარათი" : "Wallet / card", "3,000 GEL")}
+            ${mini(ka ? "კანონის შემოწმება" : "Legal check", ka ? "30კმ წესი" : "30 km rule")}
           </div>
           <div class="preview-table">
-            ${previewRow(ka ? "დამსაქმებელი" : "Company admin", ka ? "ხედავს თანამშრომლებს, ფორმებს, ხარჯებს და ანგარიშებს" : "Sees every employee, trip, budget, and report", ka ? "ყველა მონაცემი" : "All data", ka ? "აქტიური" : "Active")}
-            ${previewRow("Nino Beridze", ka ? "თანამშრომლის perDM ბარათი" : "Employee perDM card", "250 GEL left", state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"))}
-            ${previewRow(ka ? "მივლინების ფორმა" : "Mission form", ka ? "ლინკით ივსება და ხელმოწერით დასტურდება" : "Shared by link, signed and confirmed", ka ? "ლინკი" : "Link", state.missionFormSubmitted ? (ka ? "ჩაბარებულია" : "Submitted") : (ka ? "გასაგზავნია" : "Pending"))}
-            ${previewRow(ka ? "ბუღალტერი" : "Accountant", ka ? "ამოწმებს და აგენერირებს ანგარიშს" : "Approves expenses and exports reports", ka ? "ანგარიშები" : "Reports", ka ? "აქტიური" : "Active")}
+            ${previewRow(ka ? "AI ასისტენტი" : "AI assistant", ka ? "არჩევს ოპტიმალურ მარშრუტს, ბიუჯეტს და წესებს" : "Suggests route, budget, and relevant rules", ka ? "რეკომენდაცია" : "Recommendation", ka ? "მზადაა" : "Ready")}
+            ${previewRow("Nino Beridze", ka ? "ლოკაცია და ბარათი თანამშრომლის აპში" : "Location and card in employee app", "250 GEL left", state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"))}
+            ${previewRow(ka ? "მივლინების ფორმა" : "Mission form", ka ? "ლინკით ივსება, ხელმოწერით დასტურდება" : "Shared by link, signed and confirmed", ka ? "ლინკი" : "Link", state.missionFormSubmitted ? (ka ? "ჩაბარებულია" : "Submitted") : (ka ? "გასაგზავნია" : "Pending"))}
+            ${previewRow(ka ? "პარტნიორი სერვისი" : "Travel service partner", ka ? "სასტუმრო, საწვავი, კვება და შეთავაზებები" : "Hotels, fuel, meals, and offers", ka ? "ქსელი" : "Network", ka ? "აქტიური" : "Active")}
           </div>
         </div>
       </section>
       <section class="band"><div class="section">
-        <h2>${ka ? "ერთი სისტემა კომპანიისთვის და თითოეული მივლინებული თანამშრომლისთვის" : "One system for the company and every travelling employee"}</h2>
-        <p class="section-lead">${ka ? "კომპანია რეგისტრირდება, ამატებს თანამშრომლებს, უგზავნის მივლინების ფორმის ლინკს, ხოლო თანამშრომელი ავსებს ფორმას, აწერს ხელს და ადასტურებს. დამსაქმებელი ყველაფერს ხედავს თავის პანელში." : "The company signs up, adds employees, assigns trips and budgets, and gives each employee a login. Employees see their own budget, expenses, missing receipts, and upload actions. The company sees the full picture across everyone."}</p>
+        <h2>${ka ? "ერთი ეკოსისტემა კომპანიისთვის, თანამშრომლისთვის და სერვისის მიმწოდებლისთვის" : "One ecosystem for companies, employees, and service providers"}</h2>
+        <p class="section-lead">${ka ? "კომპანია გეგმავს და აკონტროლებს მივლინებებს, თანამშრომელი იღებს აპში ლოკაციას, ბარათს, ფორმას და გაფრთხილებებს, პარტნიორი ბიზნესები კი ქმნიან შეთავაზებებს PerDM მომხმარებლებისთვის." : "Companies plan and control trips, employees get location, card, forms, and alerts in their app, and travel service providers create offers for PerDM users."}</p>
         <div class="grid-3">
           ${card(1, ka ? "კომპანია რეგისტრირდება" : "Company registers", ka ? "დამსაქმებელი ქმნის perDM-ის კომპანიის ანგარიშს და ამატებს თანამშრომლებს." : "The employer creates a perDM company account and sets basic accounting rules.")}
-          ${card(2, ka ? "თანამშრომელი იღებს ლინკს და ბარათს" : "Employees receive login and card", ka ? "თანამშრომელი ავსებს ფორმას, იღებს მივლინების ბიუჯეტს ელექტრონულ ბარათზე და ტვირთავს ქვითრებს." : "Each employee gets access to their trip, virtual card budget, receipt upload, and report status.")}
-          ${card(3, ka ? "დამსაქმებელი ხედავს გადახდებს" : "Company sees payments", ka ? "დამსაქმებელი ხედავს ფორმის სტატუსს, ბარათის ტრანზაქციებს, ქვითრებს და ანგარიშებს." : "Finance managers monitor forms, card transactions, receipts, approvals, and exports.")}
+          ${card(2, ka ? "AI გეგმავს მარშრუტს და ხარჯს" : "AI plans route and cost", ka ? "სისტემა ითვლის ლოკაციას, მანძილს, სავარაუდო ხარჯს და შესაბამის წესებს." : "The system reads location, distance, estimated cost, and relevant policy rules.")}
+          ${card(3, ka ? "თანამშრომელი იღებს ლინკს და ბარათს" : "Employees receive login and card", ka ? "თანამშრომელი ავსებს ფორმას, აბამს სურვილის შემთხვევაში საკუთარ ბარათს, იღებს perDM ბიუჯეტს და ტვირთავს ქვითრებს." : "Employees complete the form, optionally connect their own card, receive PerDM budget, and upload receipts.")}
           ${card(4, ka ? "გეოლოკაცია ააქტიურებს მივლინებას" : "Geolocation activates the trip", ka ? "თუ თანამშრომელი ოფისიდან 12კმ-ზე მეტ მანძილზეა, სისტემა აჩვენებს აქტიურ მივლინებას." : "If the employee is more than 12 km from the office, the trip becomes active in the interface.")}
           ${card(5, ka ? "პარტნიორები ქმნიან შეთავაზებებს" : "Partners create offers", ka ? "სასტუმროები, საწვავი და კვების ობიექტები ქმნიან ფასდაკლებებს perDM ბარათისთვის." : "Hotels, fuel stations, and restaurants can create discounts for perDM card users.")}
           ${card(6, ka ? "ქეშბექი და ბონუსი" : "Cashback and bonus tracking", ka ? "თანამშრომელი ხედავს მიღებულ ქეშბექს, კომპანია კი ჯამურ დაზოგვას." : "Employees see earned cashback, while the company sees total savings.")}
           ${card(7, ka ? "კანონთან შესაბამისობა" : "Legal rule checks", ka ? "სისტემა ითვლის მანძილს მუდმივი სამუშაო ადგილიდან და აჩვენებს 30კმ წესს, დღიურ ნორმას და დოკუმენტაციის სტატუსს." : "The system calculates distance from the permanent workplace and shows 30 km rules, daily allowance, and documentation status.")}
+          ${card(8, ka ? "ავტომატური ანგარიშგება" : "Automated reporting", ka ? "მივლინების დასრულებისას ანგარიში გენერირდება ფორმებით, ქვითრებით, ბარათის მოძრაობით და კანონის შემოწმებით." : "At trip completion, reports are generated with forms, receipts, card activity, and compliance checks.")}
         </div>
       </div></section>
       <section class="section mission-highlight">
@@ -272,26 +274,26 @@ function landing() {
         </div>
       </section>
       <section class="section" id="problem">
-        <h2>Business trip reporting is still too manual</h2>
-        <p class="section-lead">One completed trip can leave finance teams with card statements, paper receipts, cash notes, email attachments, and Excel files to reconcile by hand.</p>
+        <h2>${ka ? "მივლინება დღეს ბევრ სისტემაში იფანტება" : "Business travel is still split across too many systems"}</h2>
+        <p class="section-lead">${ka ? "ლოკაცია, მარშრუტი, კანონით განსაზღვრული წესები, ბარათები, ქვითრები, პარტნიორი სერვისები და ანგარიშგება ხშირად ცალ-ცალკეა. PerDM ამ პროცესს ერთ სამუშაო სივრცეში აერთიანებს." : "Location, routes, legal rules, cards, receipts, service providers, and reporting often live apart. PerDM brings the full travel workflow into one workspace."}</p>
         <div class="grid-3">
-          ${["Receipts are collected manually", "Expenses are scattered across card, cash, email, and paper", "Accountants spend hours checking documents", "Missing receipts create confusion", "Excel reports take too much time", "One trip can take days to document"].map((x, i) => card(i + 1, x, "perDM brings the trip file, expense list, receipts, and report status into one clear workspace.")).join("")}
+          ${(ka ? ["მარშრუტი და ხარჯი წინასწარ არ ითვლება", "კანონის წესები ხელით მოწმდება", "ქვითრები და ბარათები ცალკეა", "თანამშრომელი გვიან იგებს ლიმიტებს", "ბუღალტერი ბევრ ფაილს აერთიანებს", "პარტნიორი სერვისები პროცესს გარეთ რჩება"] : ["Routes and costs are not planned upfront", "Legal rules are checked manually", "Receipts and cards are separate", "Employees learn limits too late", "Finance reconciles too many files", "Service providers stay outside the workflow"]).map((x, i) => card(i + 1, x, ka ? "PerDM ამ ყველაფერს AI-ით, ლოკაციით, wallet-ით და ავტომატური ანგარიშგებით აერთიანებს." : "PerDM combines this with AI, location, wallet logic, and automated reporting.")).join("")}
         </div>
       </section>
       <section class="band"><div class="section" id="workflow">
-        <h2>perDM turns every business trip into a ready-to-export expense file</h2>
-        <p class="section-lead">${ka ? "კომპანია ქმნის მივლინებას, აყენებს პოლიტიკას, ანაწილებს ბიუჯეტს, თანამშრომლის სტატუსი აქტიურდება 12კმ+ გეოლოკაციით, გადახდები მიდის perDM ბარათით, ქვითრები ერთვის და ანგარიში ექსპორტირდება." : "The company creates a trip, sets policy, distributes budget, trip status activates at 12 km+, payments happen through the perDM card, receipts attach, and reports export."}</p>
-        <div class="grid-5">${(ka ? ["კომპანია ქმნის მივლინებას", "აყენებს პოლიტიკას და 12კმ წესს", "ანაწილებს ბიუჯეტს ბარათებზე", "თანამშრომელი იხდის და ტვირთავს ქვითრებს", "ანგარიში ექსპორტირდება"] : ["Create business trip", "Set policy and 12 km rule", "Distribute budget to cards", "Employee pays and uploads receipts", "Export full report"]).map((x, i) => step(i + 1, x)).join("")}</div>
+        <h2>${ka ? "PerDM მივლინებას გეგმავს, აკონტროლებს და ანგარიშად აქცევს" : "PerDM plans, controls, and reports each business trip"}</h2>
+        <p class="section-lead">${ka ? "კომპანია ქმნის მივლინებას, AI ეხმარება მარშრუტისა და ხარჯის ოპტიმიზაციაში, გეოლოკაცია ააქტიურებს სტატუსს, wallet ანაწილებს თანხას, ხოლო სისტემა ბოლოს ანგარიშს ავტომატურად ამზადებს." : "The company creates a trip, AI helps optimize route and cost, geolocation activates status, the wallet distributes funds, and the system automatically prepares the final report."}</p>
+        <div class="grid-5">${(ka ? ["მივლინების შექმნა", "AI მარშრუტი და ხარჯი", "გეოლოკაცია და კანონის წესი", "Wallet, ბარათი და ქვითრები", "ავტომატური ანგარიში"] : ["Create trip", "AI route and cost", "Geolocation and legal rules", "Wallet, card, and receipts", "Automated report"]).map((x, i) => step(i + 1, x)).join("")}</div>
       </div></section>
       <section class="section" id="benefits">
-        <h2>Built for accountants and finance teams</h2>
+        <h2>${ka ? "სარგებელი სამივე მხარისთვის" : "Value for all three sides"}</h2>
         <div class="grid-3">
-          ${["Save accounting time", "Reduce manual Excel work", "Keep all trip expenses in one place", "Track missing receipts", "Export reports instantly", "Prepare documentation faster"].map((x, i) => card(i + 1, x, "Clear statuses and one-click reporting make the workflow easy to audit.")).join("")}
+          ${(ka ? ["კომპანია ამცირებს ქაოსს და ხარჯს", "თანამშრომელი ხედავს ბიუჯეტს, ლიმიტს და ლოკაციის სტატუსს", "ბუღალტერი იღებს მზად ანგარიშს", "პარტნიორი ბიზნესი პოულობს სამივლინებო კლიენტებს", "AI ამცირებს არასწორ ხარჯვას", "კანონის წესები ჩანს პროცესში"] : ["Companies reduce operational chaos and cost", "Employees see budget, limits, and location status", "Finance receives ready reports", "Partners reach business travel customers", "AI reduces inefficient spending", "Legal rules are visible in the workflow"]).map((x, i) => card(i + 1, x, ka ? "PerDM ქმნის მოქნილ და კონტროლირებად მივლინების გამოცდილებას." : "PerDM creates a flexible and controlled business travel experience.")).join("")}
         </div>
       </section>
       <section class="section future-strip">
-        <h2>Future modules</h2>
-        <p class="section-lead">Later versions may add perDM card integration, partner discounts, cashback, geolocation confirmation, and accounting software integrations. The first MVP focuses on documentation, verification, and report export.</p>
+        <h2>${ka ? "პლატფორმის ძირითადი მოდულები" : "Core platform modules"}</h2>
+        <p class="section-lead">${ka ? "AI ასისტენტი, გეოლოკაცია, საქართველოს კანონმდებლობის წესები, perDM Wallet, თანამშრომლის ბარათის მიბმა, პარტნიორი შეთავაზებები, ქვითრები და ავტომატური ანგარიშგება ერთიან პროდუქტად იკვრება." : "AI assistant, geolocation, Georgian legal rules, PerDM Wallet, employee card linking, partner offers, receipts, and automated reports come together as one product."}</p>
       </section>
     </main>
   </div>`;
@@ -310,7 +312,7 @@ function card(icon, title, copy) {
 }
 
 function step(icon, title) {
-  return `<article class="step"><div class="icon">${icon}</div><h3>${title}</h3><p>Everything related to the trip stays connected from creation to report export.</p></article>`;
+  return `<article class="step"><div class="icon">${icon}</div><h3>${title}</h3><p>${isKa() ? "მივლინების ყველა ნაწილი შექმნიდან ანგარიშამდე ერთმანეთთან დაკავშირებულია." : "Everything related to the trip stays connected from creation to report export."}</p></article>`;
 }
 
 function demo() {
@@ -865,13 +867,14 @@ function settingsPage() {
 }
 
 function futurePage() {
-  return shell("future", `${title("Future modules", "These modules are intentionally outside the first MVP.")}
+  const ka = isKa();
+  return shell("future", `${title(ka ? "სტრატეგიული მოდულები" : "Strategic modules", ka ? "ეს არის PerDM-ის მთავარი პროდუქტის ბირთვი: AI, გეოლოკაცია, კანონმდებლობა, wallet, ბარათები, პარტნიორები და ანგარიშგება." : "This is the core product vision for PerDM: AI, geolocation, legal rules, wallet, cards, partners, and reporting.")}
     <div class="grid-3">
-      ${card(1, "perDM card integration", "Automatic card transactions and bank/payment provider connection.")}
-      ${card(2, "Geolocation confirmation", "Confirm business trip distance and office-area status.")}
-      ${card(3, "Partner discounts", "Optional hotel, restaurant, and fuel discounts for perDM users.")}
-      ${card(4, "Cashback system", "Optional cashback logic and savings reports.")}
-      ${card(5, "Accounting software integrations", "Exports, APIs, and sync with external accounting systems.")}
+      ${card(1, ka ? "AI ასისტენტი" : "AI assistant", ka ? "მარშრუტის, ხარჯის, ლიმიტის და დოკუმენტების რეკომენდაციები." : "Route, cost, limit, and document recommendations.")}
+      ${card(2, ka ? "გეოლოკაცია" : "Geolocation", ka ? "სამუშაო ადგილიდან მანძილი, 12კმ აქტივაცია და 30კმ კანონის შემოწმება." : "Distance from workplace, 12 km activation, and 30 km legal checks.")}
+      ${card(3, ka ? "PerDM Wallet და ბარათები" : "PerDM Wallet and cards", ka ? "კომპანიის wallet, თანამშრომლის PerDM ბარათი და პირადი ბარათის მიბმა." : "Company wallet, employee PerDM card, and personal card linking.")}
+      ${card(4, ka ? "პარტნიორი შეთავაზებები" : "Partner offers", ka ? "სასტუმრო, საწვავი, კვება, cashback და სამივლინებო სერვისები." : "Hotels, fuel, meals, cashback, and travel services.")}
+      ${card(5, ka ? "ავტომატური ანგარიშგება" : "Automated reporting", ka ? "ფორმები, ქვითრები, ტრანზაქციები და საგადასახადო ფორმატები." : "Forms, receipts, transactions, and tax-ready formats.")}
     </div>`);
 }
 
@@ -946,7 +949,7 @@ function employeeOverview() {
 function employeeCard() {
   const ka = isKa();
   const rows = [...cardTransactions, ...(state.paymentSimulated ? [["June 29", "Pharmacy", "Other", 28, "Pending review"]] : [])];
-  return `${title(ka ? "ჩემი perDM ბარათი" : "My perDM card", ka ? "ეს არის მივლინებისთვის გამოყოფილი ელექტრონული ბარათი. თანამშრომელი ხედავს ბალანსს, ლიმიტებს და საკუთარ ტრანზაქციებს." : "This is the virtual card assigned for the business trip. The employee sees balance, limits, and their own transactions.")}
+  return `${title(ka ? "ჩემი PerDM ბარათი და პირადი ბარათი" : "My PerDM card and personal card", ka ? "თანამშრომელი ხედავს კომპანიის მიერ გამოყოფილ PerDM ბარათს და სურვილის შემთხვევაში აბამს საკუთარ TBC/საქართველოს ბანკის ბარათს tokenized კავშირით." : "The employee sees the company-funded PerDM card and can optionally connect their own TBC/Bank of Georgia card through a tokenized link.")}
     <div class="dash-grid">
       <section class="panel">
         ${virtualCard()}
@@ -959,8 +962,28 @@ function employeeCard() {
         </div>
       </section>
       <section class="panel">
+        <h3>${ka ? "თანამშრომლის პირადი ბარათის მიბმა" : "Connect employee personal card"}</h3>
+        <p class="section-lead">${ka ? "პირადი ბარათი შეიძლება გამოიყენოს ანაზღაურებადი ხარჯებისთვის, backup გადახდისთვის ან cashback/შეთავაზებების მისაღებად. სრული ბარათის მონაცემები PerDM-ში არ ინახება." : "A personal card can be used for reimbursable expenses, backup payment, or cashback/offers. Full card details are not stored in PerDM."}</p>
+        <div class="bank-source-list">
+          <div class="bank-source">
+            <div><strong>${ka ? "პირადი TBC Visa" : "Personal TBC Visa"}</strong><span>**** 9182 · ${ka ? "თანამშრომლის ბარათი" : "Employee-owned card"}</span></div>
+            <div><strong>${state.employeeBankLinked ? (ka ? "მიბმულია" : "Connected") : (ka ? "არ არის მიბმული" : "Not connected")}</strong>${badge(state.employeeBankLinked ? (ka ? "აქტიური" : "Active") : (ka ? "სურვილისამებრ" : "Optional"))}</div>
+          </div>
+        </div>
+        <div class="form-grid">
+          ${field(ka ? "ბანკი" : "Bank", "TBC Bank", "select")}
+          ${field(ka ? "ბარათის ტიპი" : "Card type", "Visa / Mastercard", "select")}
+          ${field(ka ? "გამოყენება" : "Use case", ka ? "backup / ანაზღაურება" : "Backup / reimbursement", "select")}
+          ${field(ka ? "დადასტურება" : "Confirmation", ka ? "3DS / ბანკის თანხმობა" : "3DS / bank consent", "select")}
+        </div>
+        <div class="action-row">
+          <button class="btn primary" onclick="state.employeeBankLinked=true;render()">${ka ? "ჩემი ბარათის მიბმა" : "Connect my card"}</button>
+          <button class="btn" onclick="setRoute('#/employee/receipts')">${ka ? "ქვითრის მიბმა" : "Attach receipt"}</button>
+        </div>
+      </section>
+      <section class="panel">
         <h3>${ka ? "რა შეუძლია თანამშრომელს" : "Employee card actions"}</h3>
-        <p class="section-lead">${ka ? "თანამშრომელს შეუძლია ბალანსის ნახვა, ტრანზაქციების შემოწმება, ქვითრის მიბმა და საჭიროების შემთხვევაში ბარათის პრობლემის შეტყობინება." : "The employee can view balance, check transactions, attach receipts, and report a card issue if needed."}</p>
+        <p class="section-lead">${ka ? "თანამშრომელს შეუძლია ბალანსის ნახვა, ტრანზაქციების შემოწმება, ქვითრის მიბმა, საკუთარი ბარათის დაკავშირება და ლიმიტების გაფრთხილების მიღება." : "The employee can view balance, check transactions, attach receipts, connect a personal card, and receive limit alerts."}</p>
         <button class="btn" onclick="setRoute('#/employee/receipts')">${ka ? "ქვითრის მიბმა" : "Attach receipt"}</button>
       </section>
     </div>
