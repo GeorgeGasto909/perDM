@@ -18,6 +18,10 @@ const state = {
   bankLinked: true,
   employeeBankLinked: false,
   aiAnswered: false,
+  aiLoading: false,
+  aiAnswer: "",
+  aiError: "",
+  aiPrompt: "",
 };
 
 const company = {
@@ -140,6 +144,47 @@ const app = document.getElementById("app");
 
 function money(value) {
   return `${value.toLocaleString()} GEL`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatAiText(value) {
+  return escapeHtml(value).replaceAll("\n", "<br>");
+}
+
+async function askAi() {
+  const promptEl = document.getElementById("aiPrompt");
+  state.aiPrompt = promptEl ? promptEl.value.trim() : state.aiPrompt;
+  state.aiLoading = true;
+  state.aiError = "";
+  state.aiAnswered = false;
+  render();
+
+  try {
+    const response = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: state.aiPrompt }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || data.details || "AI endpoint is not responding");
+
+    state.aiAnswer = data.answer || "AI response was empty.";
+    state.aiAnswered = true;
+  } catch (error) {
+    state.aiError = String(error.message || error);
+  } finally {
+    state.aiLoading = false;
+    render();
+  }
 }
 
 function nino() {
@@ -494,19 +539,20 @@ function dashboard() {
 
 function aiAssistantPage() {
   const ka = isKa();
-  const answer = ka
-    ? "ნინო ბერიძის Batumi მივლინება კომპანიის 12კმ წესით აქტიურია, რადგან ოფისიდან 18.4კმ-ზეა. საქართველოს 30კმ დღიური ნორმა ამ მაგალითში ჯერ არ ირთვება, ამიტომ სისტემამ უნდა აჩვენოს მგზავრობის ხარჯის დოკუმენტირება, ქვითრების მოთხოვნა და ბარათის დღიური ლიმიტის კონტროლი. რეკომენდაცია: მარშრუტი დარჩეს მიმდინარე გზაზე, hotel/meal/fuel კატეგორიები დარჩეს ნებადართული, ხოლო 35 GEL ტაქსის ქვითარი მოითხოვოს ანგარიშის გენერაციამდე."
-    : "Nino Beridze's Batumi trip is active under the company 12 km rule because she is 18.4 km from the office. The Georgian 30 km daily allowance rule is not triggered yet in this example, so the system should document travel cost, request receipts, and monitor the card daily limit. Recommendation: keep the current route, allow hotel/meal/fuel categories, and request the 35 GEL taxi receipt before report generation.";
-  return shell("ai", `${title(ka ? "PerDM AI ასისტენტი" : "PerDM AI assistant", ka ? "ChatGPT API-ზე დაფუძნებული ასისტენტი ეხმარება კომპანიას მივლინების წესების, მარშრუტის, ხარჯების და ანგარიშის ტექსტის მომზადებაში." : "A ChatGPT API-powered assistant helps the company reason through travel rules, route choices, expenses, and report text.", `<button class="btn primary" onclick="state.aiAnswered=true;render()">${ka ? "AI პასუხის გენერაცია" : "Generate AI answer"}</button>`)}
+  const defaultPrompt = ka
+    ? "შეამოწმე ნინოს მივლინება: 18.4კმ ოფისიდან, ბიუჯეტი 3,000 GEL, ქვითრები 18/20, ტაქსის ქვითარი აკლია. მითხარი რომელი წესები ირთვება და რა უნდა გავაკეთო ანგარიშამდე."
+    : "Check Nino's trip: 18.4 km from office, 3,000 GEL budget, receipts 18/20, taxi receipt missing. Tell me which rules apply and what to do before reporting.";
+  const prompt = state.aiPrompt || defaultPrompt;
+  return shell("ai", `${title(ka ? "PerDM AI ასისტენტი" : "PerDM AI assistant", ka ? "ChatGPT API-ზე დაფუძნებული ასისტენტი ეხმარება კომპანიას მივლინების წესების, მარშრუტის, ხარჯების და ანგარიშის ტექსტის მომზადებაში." : "A ChatGPT API-powered assistant helps the company reason through travel rules, route choices, expenses, and report text.", `<button class="btn primary" onclick="askAi()" ${state.aiLoading ? "disabled" : ""}>${state.aiLoading ? (ka ? "AI ფიქრობს..." : "AI is thinking...") : (ka ? "AI პასუხის გენერაცია" : "Generate AI answer")}</button>`)}
     <div class="dash-grid">
       <section class="panel">
         <h3>${ka ? "კითხვა ასისტენტს" : "Ask the assistant"}</h3>
         <div class="field wide">
           <label>${ka ? "კომპანიის შეკითხვა" : "Company prompt"}</label>
-          <textarea>${ka ? "შეამოწმე ნინოს მივლინება: 18.4კმ ოფისიდან, ბიუჯეტი 3,000 GEL, ქვითრები 18/20, ტაქსის ქვითარი აკლია. მითხარი რომელი წესები ირთვება და რა უნდა გავაკეთო ანგარიშამდე." : "Check Nino's trip: 18.4 km from office, 3,000 GEL budget, receipts 18/20, taxi receipt missing. Tell me which rules apply and what to do before reporting."}</textarea>
+          <textarea id="aiPrompt">${escapeHtml(prompt)}</textarea>
         </div>
         <div class="action-row">
-          <button class="btn primary" onclick="state.aiAnswered=true;render()">${ka ? "პასუხის მიღება" : "Get answer"}</button>
+          <button class="btn primary" onclick="askAi()" ${state.aiLoading ? "disabled" : ""}>${state.aiLoading ? (ka ? "იგზავნება..." : "Sending...") : (ka ? "პასუხის მიღება" : "Get answer")}</button>
           <button class="btn" onclick="setRoute('#/dashboard/legal')">${ka ? "კანონის წესების ნახვა" : "View legal rules"}</button>
         </div>
       </section>
@@ -514,7 +560,7 @@ function aiAssistantPage() {
         <h3>${ka ? "AI პასუხი" : "AI response"}</h3>
         <div class="ai-response">
           <strong>${ka ? "PerDM AI" : "PerDM AI"}</strong>
-          <p>${state.aiAnswered ? answer : (ka ? "დააჭირე “პასუხის მიღება”-ს, რომ prototype-ში გენერირებული რეკომენდაცია გამოჩნდეს." : "Click “Get answer” to show the generated recommendation in this prototype.")}</p>
+          <p>${state.aiLoading ? (ka ? "პასუხი მუშავდება..." : "Generating an answer...") : state.aiError ? formatAiText(ka ? `AI ჯერ ვერ დაუკავშირდა სერვერს: ${state.aiError}` : `AI could not reach the server yet: ${state.aiError}`) : state.aiAnswered ? formatAiText(state.aiAnswer) : (ka ? "დააჭირე “პასუხის მიღება”-ს, რომ რეალური ChatGPT პასუხი გამოჩნდეს." : "Click “Get answer” to show a real ChatGPT response.")}</p>
         </div>
         ${state.aiAnswered ? `<div class="grid-3 ai-cards">
           ${stat(ka ? "წესი" : "Rule", "12 km", ka ? "მივლინება აქტიურია" : "Trip active")}
