@@ -4,6 +4,8 @@ const state = {
   cashAdded: false,
   reportGenerated: false,
   allReviewed: false,
+  signupCreated: false,
+  employeeReceiptUploaded: false,
 };
 
 const company = {
@@ -149,7 +151,8 @@ function topNav() {
       <a href="#problem">Problem</a>
       <a href="#workflow">Workflow</a>
       <a href="#benefits">Benefits</a>
-      <button class="btn small primary" onclick="setRoute('#/dashboard')">Open Demo Dashboard</button>
+      <button class="btn small" onclick="setRoute('#/login')">Log in</button>
+      <button class="btn small primary" onclick="setRoute('#/signup')">Sign up</button>
     </nav>
   </div></header>`;
 }
@@ -163,29 +166,38 @@ function landing() {
           <h1>Business trip expenses, organized in one place</h1>
           <p>Perdiemi helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents.</p>
           <div class="hero-actions">
-            <button class="btn primary" onclick="setRoute('#/dashboard')">Open Demo Dashboard</button>
-            <a class="btn" href="#workflow">See How It Works</a>
+            <button class="btn primary" onclick="setRoute('#/signup')">Register company</button>
+            <button class="btn" onclick="setRoute('#/login')">Log in</button>
           </div>
         </div>
         <div class="hero-visual light-preview">
           <div class="preview-header">
-            <strong>Nino Beridze - Batumi trip</strong>
-            <button class="btn small primary">Download report</button>
+            <strong>Company and employee workspace</strong>
+            <button class="btn small primary">Invite employee</button>
           </div>
           <div class="mini-grid">
-            ${mini("Trip period", "June 1-June 30")}
-            ${mini("Card expenses", "2,340 GEL")}
-            ${mini("Cash expenses", "410 GEL")}
-            ${mini("Receipt status", "18/20 attached")}
+            ${mini("Company account", "Demo Company LLC")}
+            ${mini("Employees", "5 active users")}
+            ${mini("Assigned budget", "3,000 GEL")}
+            ${mini("Receipts", "18/20 attached")}
           </div>
           <div class="preview-table">
-            ${previewRow("Hotel Batumi", "Perdiemi Card", "720 GEL", "Attached")}
-            ${previewRow("Taxi", "Cash", "35 GEL", "Missing")}
-            ${previewRow("Fuel Station", "Perdiemi Card", "160 GEL", "Attached")}
-            ${previewRow("Parking", "Cash", "15 GEL", "Missing")}
+            ${previewRow("Company admin", "Sees every employee, trip, budget, and report", "All data", "Active")}
+            ${previewRow("Nino Beridze", "Employee portal", "250 GEL left", "Needs receipt")}
+            ${previewRow("Giorgi Kapanadze", "Employee portal", "185 GEL left", "Ready")}
+            ${previewRow("Accountant", "Approves expenses and exports reports", "Reports", "Active")}
           </div>
         </div>
       </section>
+      <section class="band"><div class="section">
+        <h2>One system for the company and every travelling employee</h2>
+        <p class="section-lead">The company signs up, adds employees, assigns trips and budgets, and gives each employee a login. Employees see their own budget, expenses, missing receipts, and upload actions. The company sees the full picture across everyone.</p>
+        <div class="grid-3">
+          ${card(1, "Company registers", "The employer creates a Perdiemi company account and sets basic accounting rules.")}
+          ${card(2, "Employees receive login", "Each employee gets access to their own trip, budget, receipt upload, and report status.")}
+          ${card(3, "Company sees everything", "Finance managers monitor all employees, expenses, receipts, approvals, and exports.")}
+        </div>
+      </div></section>
       <section class="section" id="problem">
         <h2>Business trip reporting is still too manual</h2>
         <p class="section-lead">One completed trip can leave finance teams with card statements, paper receipts, cash notes, email attachments, and Excel files to reconcile by hand.</p>
@@ -237,6 +249,83 @@ function demo() {
       ${demoCard("Company Admin", "Basic company settings, receipt rules, and finance defaults.", "#/dashboard/settings")}
     </div>
   </section></div>`;
+}
+
+function loginPage() {
+  return `<div class="page">${topNav()}<section class="section auth-section">
+    <div class="auth-card">
+      <div>
+        <div class="eyebrow">Demo login</div>
+        <h1>Log in to Perdiemi</h1>
+        <p class="section-lead">Choose how to enter the prototype. In the real product, companies create employee logins after registration.</p>
+      </div>
+      <div class="grid-2">
+        ${portalCard("Company / Finance Manager", "Manage employees, trips, budgets, expenses, receipts, approvals, and reports.", "#/dashboard", "Open company dashboard")}
+        ${portalCard("Employee", "View assigned budget, trip expenses, missing receipts, and upload documents.", "#/employee", "Open employee portal")}
+      </div>
+      <p class="auth-note">Demo credentials are mocked for the prototype. No real authentication is connected yet.</p>
+    </div>
+  </section></div>`;
+}
+
+function signupPage() {
+  return `<div class="page">${topNav()}<section class="section auth-section">
+    <div class="auth-card">
+      <div class="title-row">
+        <div>
+          <div class="eyebrow">Company sign up</div>
+          <h1>Register your company</h1>
+          <p>Set up the employer account, add employees, and prepare employee logins for the travel expense workflow.</p>
+        </div>
+        <button class="btn" onclick="setRoute('#/login')">Already registered?</button>
+      </div>
+      ${state.signupCreated ? `<div class="trip-banner"><span>Company account created. Employee logins are ready for demo use.</span>${badge("Active")}</div>` : ""}
+      <div class="dash-grid">
+        <section class="panel">
+          <h3>Company details</h3>
+          <div class="form-grid">
+            ${field("Company name", company.name)}
+            ${field("Company identification number", company.id)}
+            ${field("Finance manager", company.accountant)}
+            ${field("Finance email", company.email)}
+            ${field("Default currency", "GEL", "select")}
+            ${field("Receipt required above", "40 GEL")}
+          </div>
+          <br><button class="btn primary" onclick="state.signupCreated=true;render()">Create company account</button>
+        </section>
+        <section class="panel">
+          <h3>Add employees</h3>
+          <div class="employee-invite-list">
+            ${inviteRow("Nino Beridze", "Sales Manager", "nino@demo-company.ge", "Login ready")}
+            ${inviteRow("Giorgi Kapanadze", "Field Specialist", "giorgi@demo-company.ge", "Login ready")}
+            ${inviteRow("Mariam Lomidze", "Operations Lead", "mariam@demo-company.ge", "Invite sent")}
+          </div>
+          <br>
+          <div class="form-grid">
+            ${field("Employee name", "Ana Maisuradze")}
+            ${field("Work email", "ana@demo-company.ge")}
+            ${field("Position", "Marketing Coordinator")}
+            ${field("Monthly travel budget", "700 GEL")}
+          </div>
+          <br><button class="btn">Add employee</button>
+        </section>
+      </div>
+      <div class="signup-flow">
+        ${step(1, "Company creates account")}
+        ${step(2, "Company adds employees")}
+        ${step(3, "Employees get login")}
+        ${step(4, "Company tracks every trip")}
+      </div>
+    </div>
+  </section></div>`;
+}
+
+function portalCard(title, copy, route, action) {
+  return `<article class="role-card portal-card"><div class="icon">${title[0]}</div><h3>${title}</h3><p>${copy}</p><br><button class="btn primary" onclick="setRoute('${route}')">${action}</button></article>`;
+}
+
+function inviteRow(name, role, email, status) {
+  return `<div class="invite-row"><span><strong>${name}</strong><small>${role} · ${email}</small></span>${badge(status)}</div>`;
 }
 
 function demoCard(title, copy, route) {
@@ -422,10 +511,14 @@ function reportPreview(t) {
 }
 
 function employeesPage() {
-  return shell("employees", `${title("Employees", "Employee trip history, expenses, missing receipts, and generated reports.")}
-    <section class="panel table-wrap"><table><thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Active trips</th><th>Completed trips</th><th>Expenses this month</th><th>Missing receipts</th><th>Action</th></tr></thead><tbody>
-    ${employees.map((e) => `<tr><td><strong>${e[0]}</strong></td><td>${e[1]}</td><td>${e[2]}</td><td>${e[3]}</td><td>${e[4]}</td><td>${money(e[5])}</td><td>${badge(String(e[6]))}</td><td><button class="btn small" onclick="setRoute('#/dashboard/trips/nino-batumi')">View employee</button></td></tr>`).join("")}
+  return shell("employees", `${title("Employees", "Company manages every employee login, assigned budget, trip status, expenses, and missing receipts.", `<button class="btn primary" onclick="setRoute('#/signup')">Add employee</button>`)}
+    <section class="panel table-wrap"><table><thead><tr><th>Name</th><th>Position</th><th>Department</th><th>Login</th><th>Assigned budget</th><th>Current trip</th><th>Expenses this month</th><th>Missing receipts</th><th>Action</th></tr></thead><tbody>
+    ${employees.map((e, index) => `<tr><td><strong>${e[0]}</strong><small class="table-sub">${employeeEmail(e[0])}</small></td><td>${e[1]}</td><td>${e[2]}</td><td>${badge(index < 3 ? "Login active" : "Invite pending")}</td><td>${money([3000, 900, 600, 1200, 700][index])}</td><td>${index === 0 ? "Batumi business trip" : index === 1 ? "Kutaisi field visit" : "No active trip"}</td><td>${money(e[5])}</td><td>${badge(String(e[6]))}</td><td><button class="btn small" onclick="setRoute('${index === 0 ? "#/dashboard/trips/nino-batumi" : "#/employee"}')">${index === 0 ? "Open trip" : "View employee"}</button></td></tr>`).join("")}
     </tbody></table></section>`);
+}
+
+function employeeEmail(name) {
+  return `${name.split(" ")[0].toLowerCase()}@demo-company.ge`;
 }
 
 function expensesPage() {
@@ -460,6 +553,108 @@ function futurePage() {
     </div>`);
 }
 
+const employeeLinks = [
+  ["overview", "My Overview", "#/employee"],
+  ["trip", "My Trip", "#/employee/trip"],
+  ["expenses", "My Expenses", "#/employee/expenses"],
+  ["receipts", "Upload Receipts", "#/employee/receipts"],
+  ["report", "Submit Report", "#/employee/report"],
+];
+
+function employeeShell(active, content) {
+  return `<div class="app-shell employee-shell">
+    <aside class="sidebar">
+      ${brand()}
+      <nav class="side-nav">${employeeLinks.map(([key, label, route]) => `<button class="side-link ${active === key ? "active" : ""}" onclick="setRoute('${route}')"><span>${sideIcon(label)}</span>${label}</button>`).join("")}</nav>
+    </aside>
+    <main class="main">
+      <div class="dash-top"><strong>Employee portal · Nino Beridze</strong><div><button class="btn small" onclick="setRoute('#/login')">Switch login</button></div></div>
+      <div class="mobile-tabs">${employeeLinks.map(([key, label, route]) => `<button class="side-link ${active === key ? "active" : ""}" onclick="setRoute('${route}')">${label}</button>`).join("")}</div>
+      <div class="dash-content">${content}</div>
+    </main>
+  </div>`;
+}
+
+function employeePortal(view = "overview") {
+  const pages = {
+    overview: employeeOverview,
+    trip: employeeTrip,
+    expenses: employeeExpenses,
+    receipts: employeeReceipts,
+    report: employeeReport,
+  };
+  return employeeShell(view, pages[view]());
+}
+
+function employeeOverview() {
+  const t = nino();
+  return `${title("My travel workspace", "Your company assigned this trip, budget, expenses, and receipt tasks to your employee account.")}
+    <div class="stats">
+      ${stat("Assigned budget", money(t.budget), "Batumi business trip")}
+      ${stat("Spent", money(t.total), "Card + cash")}
+      ${stat("Remaining", money(t.budget - t.total), "Available budget")}
+      ${stat("Receipts to upload", String(t.missing), "Required before report")}
+      ${stat("Pending review", String(t.pending), "Finance will approve")}
+      ${stat("Report status", t.report, "Company can monitor")}
+    </div>
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>What you need to do</h3>
+        ${attention("Upload missing receipt", "Taxi - 35 GEL, June 3", state.receiptAttached ? "Done" : "Needs receipt", "#/employee/receipts")}
+        ${attention("Check expense list", "Confirm card and cash payments are correct", "Open", "#/employee/expenses")}
+        ${attention("Submit trip report", "Send completed trip file to finance", "Pending", "#/employee/report")}
+      </section>
+      <section class="panel">
+        <h3>Employee view</h3>
+        <p class="section-lead">The employee does not see company-wide data. They only see their own budget, trip, expenses, missing documents, and report submission status.</p>
+        <button class="btn primary" onclick="setRoute('#/employee/receipts')">Upload receipt</button>
+      </section>
+    </div>`;
+}
+
+function employeeTrip() {
+  const t = nino();
+  return `${title("My Batumi trip", "Trip details assigned by the company.")}
+    <section class="panel trip-hero">
+      <div>
+        <h3>${t.destination} business trip</h3>
+        <p>${t.period} · ${t.purpose}</p>
+        <p><strong>Company:</strong> ${company.name} · <strong>Employee:</strong> ${t.employee}</p>
+      </div>
+      <div class="budget-box"><span>Remaining budget</span><strong>${money(t.budget - t.total)}</strong><small>${money(t.total)} spent</small></div>
+    </section>
+    <div class="trip-banner"><span>${t.missing} receipt${t.missing > 1 ? "s are" : " is"} still needed before finance can finalize the report.</span>${badge(t.report)}</div>`;
+}
+
+function employeeExpenses() {
+  return `${title("My expenses", "Card payments and cash expenses linked to your assigned business trip.")}
+    <section class="panel">${expenseTable(expenses(), true)}</section>`;
+}
+
+function employeeReceipts() {
+  const missing = expenses().filter((row) => row[5] === "Missing");
+  return `${title("Upload receipts", "Attach missing receipts so finance can complete the company report.")}
+    ${state.employeeReceiptUploaded || state.receiptAttached ? `<div class="trip-banner"><span>Receipt uploaded and sent to finance for review.</span>${badge("Uploaded")}</div>` : ""}
+    <div class="dash-grid">
+      <section class="panel"><h3>Receipts still needed</h3>${missing.length ? missing.map((row) => missingCard(row)).join("") : `<div class="empty">All required receipts are attached.</div>`}</section>
+      <section class="panel"><h3>Upload receipt</h3><div class="upload"><strong>${state.employeeReceiptUploaded ? "Receipt uploaded" : "Choose receipt image"}</strong><p>${state.employeeReceiptUploaded ? "Finance can now see this document in the company dashboard." : "Mock upload area for the employee account."}</p></div><br><div class="form-grid">${field("Select expense", "Taxi - 35 GEL", "select")}${field("Comment", "Taxi receipt from June 3")}</div><br><button class="btn primary" onclick="state.employeeReceiptUploaded=true;state.receiptAttached=true;render()">Upload and send to finance</button></section>
+    </div>`;
+}
+
+function employeeReport() {
+  const t = nino();
+  return `${title("Submit report", "Submit your completed trip file to the company finance manager.")}
+    <section class="panel">
+      <div class="grid-3">
+        ${stat("Trip", `${t.destination}`, t.period)}
+        ${stat("Total expenses", money(t.total), `${money(t.card)} card / ${money(t.cash)} cash`)}
+        ${stat("Receipt status", `${t.attached}/${t.totalReceipts}`, `${t.missing} missing`)}
+      </div>
+      <p class="section-lead">After receipts are attached, the company can approve expenses and export the official finance report.</p>
+      <button class="btn primary">Submit to company</button>
+    </section>`;
+}
+
 function filterBar(items) {
   return `<section class="panel filter-bar">${items.map((item) => `<div class="field"><label>${item}</label><select><option>All</option></select></div>`).join("")}</section>`;
 }
@@ -485,6 +680,8 @@ function render() {
   const hash = window.location.hash || "#/";
   let html = landing();
   if (hash === "#/demo") html = demo();
+  if (hash === "#/login") html = loginPage();
+  if (hash === "#/signup") html = signupPage();
   if (hash === "#/dashboard") html = dashboard();
   if (hash === "#/dashboard/trips") html = tripsPage();
   if (hash.startsWith("#/dashboard/trips/")) html = tripDetail();
@@ -494,6 +691,11 @@ function render() {
   if (hash === "#/dashboard/reports") html = reportsPage();
   if (hash === "#/dashboard/settings") html = settingsPage();
   if (hash === "#/dashboard/future-modules") html = futurePage();
+  if (hash === "#/employee") html = employeePortal("overview");
+  if (hash === "#/employee/trip") html = employeePortal("trip");
+  if (hash === "#/employee/expenses") html = employeePortal("expenses");
+  if (hash === "#/employee/receipts") html = employeePortal("receipts");
+  if (hash === "#/employee/report") html = employeePortal("report");
   app.innerHTML = html;
   window.scrollTo(0, 0);
 }
