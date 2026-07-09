@@ -490,19 +490,19 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
 .bank-source > div:last-child {
   text-align: right;
 }
-.wallet-flow {
+.bank-sync-flow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-bottom: 16px;
 }
-.wallet-flow div {
+.bank-sync-flow div {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #f7fafc;
   padding: 14px;
 }
-.wallet-flow span {
+.bank-sync-flow span {
   display: block;
   color: var(--muted);
   margin-top: 6px;

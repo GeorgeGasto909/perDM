@@ -578,7 +578,7 @@ function paymentsPage() {
       </section>
       <section class="panel">
         <h3>${ka ? "ტრანზაქციის სინქი" : "Transaction sync"}</h3>
-        <div class="wallet-flow">
+        <div class="bank-sync-flow">
           <div><strong>${ka ? "არსებული ბანკი" : "Existing bank"}</strong><span>TBC, BOG, Liberty</span></div>
           <div><strong>${ka ? "PerDM sync" : "PerDM sync"}</strong><span>${ka ? "token + consent" : "token + consent"}</span></div>
           <div><strong>${ka ? "ანგარიშგება" : "Reporting"}</strong><span>${ka ? "ქვითრები + წესები" : "Receipts + rules"}</span></div>
