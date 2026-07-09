@@ -507,6 +507,25 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
   color: var(--muted);
   margin-top: 6px;
 }
+.ai-response {
+  border: 1px solid #b8eadf;
+  background: #f2fbf8;
+  border-radius: 8px;
+  padding: 16px;
+  line-height: 1.6;
+}
+.ai-response strong {
+  display: block;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+.ai-response p {
+  margin: 0;
+  color: var(--ink);
+}
+.ai-cards {
+  margin-top: 14px;
+}
 .action-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
 .trip-hero {
   display: flex;

@@ -18,6 +18,7 @@ const state = {
   bankLinked: true,
   walletTopUp: false,
   employeeBankLinked: false,
+  aiAnswered: false,
 };
 
 const company = {
@@ -437,6 +438,7 @@ function demoCard(title, copy, route, action = "Open demo") {
 
 const links = [
   ["overview", "Overview", "#/dashboard"],
+  ["ai", "AI Assistant", "#/dashboard/ai"],
   ["missionForms", "Mission Forms", "#/dashboard/mission-forms"],
   ["payments", "Wallet & Cards", "#/dashboard/payments"],
   ["policies", "Travel Policies", "#/dashboard/policies"],
@@ -467,7 +469,7 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", "Live Location": "⌖", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "AI Assistant": "✦", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", "Live Location": "⌖", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
@@ -488,6 +490,49 @@ function dashboard() {
       <section class="panel"><h3>Expenses by category</h3><div class="donut"></div><p class="section-lead">Hotel, meals, fuel, transport, and other expenses grouped for finance review.</p></section>
     </div>
     <section class="panel" style="margin-top:16px"><h3>Monthly business trip expenses</h3><div class="bar-chart">${[38, 54, 42, 71, 63, 84].map((h, i) => `<div class="bar" style="height:${h}%"><span>${["Jan","Feb","Mar","Apr","May","Jun"][i]}</span></div>`).join("")}</div></section>`);
+}
+
+function aiAssistantPage() {
+  const ka = isKa();
+  const answer = ka
+    ? "ნინო ბერიძის Batumi მივლინება კომპანიის 12კმ წესით აქტიურია, რადგან ოფისიდან 18.4კმ-ზეა. საქართველოს 30კმ დღიური ნორმა ამ მაგალითში ჯერ არ ირთვება, ამიტომ სისტემამ უნდა აჩვენოს მგზავრობის ხარჯის დოკუმენტირება, ქვითრების მოთხოვნა და ბარათის დღიური ლიმიტის კონტროლი. რეკომენდაცია: მარშრუტი დარჩეს მიმდინარე გზაზე, hotel/meal/fuel კატეგორიები დარჩეს ნებადართული, ხოლო 35 GEL ტაქსის ქვითარი მოითხოვოს ანგარიშის გენერაციამდე."
+    : "Nino Beridze's Batumi trip is active under the company 12 km rule because she is 18.4 km from the office. The Georgian 30 km daily allowance rule is not triggered yet in this example, so the system should document travel cost, request receipts, and monitor the card daily limit. Recommendation: keep the current route, allow hotel/meal/fuel categories, and request the 35 GEL taxi receipt before report generation.";
+  return shell("ai", `${title(ka ? "PerDM AI ასისტენტი" : "PerDM AI assistant", ka ? "ChatGPT API-ზე დაფუძნებული ასისტენტი ეხმარება კომპანიას მივლინების წესების, მარშრუტის, ხარჯების და ანგარიშის ტექსტის მომზადებაში." : "A ChatGPT API-powered assistant helps the company reason through travel rules, route choices, expenses, and report text.", `<button class="btn primary" onclick="state.aiAnswered=true;render()">${ka ? "AI პასუხის გენერაცია" : "Generate AI answer"}</button>`)}
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "კითხვა ასისტენტს" : "Ask the assistant"}</h3>
+        <div class="field wide">
+          <label>${ka ? "კომპანიის შეკითხვა" : "Company prompt"}</label>
+          <textarea>${ka ? "შეამოწმე ნინოს მივლინება: 18.4კმ ოფისიდან, ბიუჯეტი 3,000 GEL, ქვითრები 18/20, ტაქსის ქვითარი აკლია. მითხარი რომელი წესები ირთვება და რა უნდა გავაკეთო ანგარიშამდე." : "Check Nino's trip: 18.4 km from office, 3,000 GEL budget, receipts 18/20, taxi receipt missing. Tell me which rules apply and what to do before reporting."}</textarea>
+        </div>
+        <div class="action-row">
+          <button class="btn primary" onclick="state.aiAnswered=true;render()">${ka ? "პასუხის მიღება" : "Get answer"}</button>
+          <button class="btn" onclick="setRoute('#/dashboard/legal')">${ka ? "კანონის წესების ნახვა" : "View legal rules"}</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "AI პასუხი" : "AI response"}</h3>
+        <div class="ai-response">
+          <strong>${ka ? "PerDM AI" : "PerDM AI"}</strong>
+          <p>${state.aiAnswered ? answer : (ka ? "დააჭირე “პასუხის მიღება”-ს, რომ prototype-ში გენერირებული რეკომენდაცია გამოჩნდეს." : "Click “Get answer” to show the generated recommendation in this prototype.")}</p>
+        </div>
+        ${state.aiAnswered ? `<div class="grid-3 ai-cards">
+          ${stat(ka ? "წესი" : "Rule", "12 km", ka ? "მივლინება აქტიურია" : "Trip active")}
+          ${stat(ka ? "კანონი" : "Legal", "30 km", ka ? "ჯერ არ ირთვება" : "Not triggered yet")}
+          ${stat(ka ? "ქვითარი" : "Receipt", "1 missing", ka ? "ანგარიშამდე საჭიროა" : "Needed before report")}
+        </div>` : ""}
+      </section>
+    </div>
+    <section class="panel" style="margin-top:16px">
+      <h3>${ka ? "რეალური API ინტეგრაციის არქიტექტურა" : "Real API integration architecture"}</h3>
+      <div class="grid-4">
+        ${card(1, ka ? "Frontend" : "Frontend", ka ? "მომხმარებელი წერს კითხვას PerDM-ში." : "User writes a prompt inside PerDM.")}
+        ${card(2, ka ? "Backend" : "Backend", ka ? "სერვერი ინახავს OpenAI API key-ს უსაფრთხოდ." : "Server securely stores the OpenAI API key.")}
+        ${card(3, ka ? "OpenAI API" : "OpenAI API", ka ? "აგენერირებს რეკომენდაციას კონტექსტით." : "Generates an answer using trip context.")}
+        ${card(4, ka ? "PerDM პასუხი" : "PerDM output", ka ? "აჩვენებს წესებს, რისკებს, ხარჯებს და ანგარიშის ტექსტს." : "Shows rules, risks, costs, and report text.")}
+      </div>
+      <p class="section-lead">${ka ? "მნიშვნელოვანი: API key არ უნდა ჩაიწეროს GitHub Pages-ის JavaScript-ში. რეალურ ვერსიაში საჭიროა backend ან serverless endpoint." : "Important: the API key must not be placed in GitHub Pages JavaScript. The real version needs a backend or serverless endpoint."}</p>
+    </section>`);
 }
 
 function missionFormsPage() {
@@ -1209,6 +1254,7 @@ function render() {
   if (hash === "#/signup") html = signupPage();
   if (hash === "#/mission-form") html = missionFormPage();
   if (hash === "#/dashboard") html = dashboard();
+  if (hash === "#/dashboard/ai") html = aiAssistantPage();
   if (hash === "#/dashboard/mission-forms") html = missionFormsPage();
   if (hash === "#/dashboard/payments") html = paymentsPage();
   if (hash === "#/dashboard/policies") html = policiesPage();
