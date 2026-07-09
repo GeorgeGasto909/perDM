@@ -151,6 +151,7 @@ function topNav() {
       <a href="#problem">Problem</a>
       <a href="#workflow">Workflow</a>
       <a href="#benefits">Benefits</a>
+      <button class="btn small" onclick="setRoute('#/demo')">Demo</button>
       <button class="btn small" onclick="setRoute('#/login')">Log in</button>
       <button class="btn small primary" onclick="setRoute('#/signup')">Sign up</button>
     </nav>
@@ -166,7 +167,8 @@ function landing() {
           <h1>Business trip expenses, organized in one place</h1>
           <p>perDM helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents.</p>
           <div class="hero-actions">
-            <button class="btn primary" onclick="setRoute('#/signup')">Register company</button>
+            <button class="btn primary" onclick="setRoute('#/demo')">View demo</button>
+            <button class="btn" onclick="setRoute('#/signup')">Register company</button>
             <button class="btn" onclick="setRoute('#/login')">Log in</button>
           </div>
         </div>
@@ -242,11 +244,28 @@ function step(icon, title) {
 
 function demo() {
   return `<div class="page">${topNav()}<section class="section">
-    <div class="title-row"><div><h1>perDM demo</h1><p>Follow the accountant workflow from trip review to report download.</p></div></div>
+    <div class="title-row"><div><h1>perDM demo</h1><p>Choose the perspective you want to show: what the company sees, or what the employee sees.</p></div></div>
+    <div class="grid-2 demo-choice-grid">
+      ${demoCard("Company view", "The company sees all employees, trips, budgets, card and cash expenses, missing receipts, approvals, and export-ready reports.", "#/dashboard", "Open company demo")}
+      ${demoCard("Employee view", "The employee sees only their assigned trip, remaining budget, personal expenses, missing receipt tasks, and report submission status.", "#/employee", "Open employee demo")}
+    </div>
+    <section class="panel demo-compare">
+      <h3>How the two demos connect</h3>
+      <div class="grid-2">
+        <div>
+          <h4>Company / Finance Manager</h4>
+          <p class="section-lead">Adds employees, assigns budgets, monitors every business trip, checks receipts, approves expenses, and downloads reports.</p>
+        </div>
+        <div>
+          <h4>Employee</h4>
+          <p class="section-lead">Logs in separately, sees their own trip and budget, uploads missing receipts, and submits the trip file back to the company.</p>
+        </div>
+      </div>
+    </section>
     <div class="grid-3">
-      ${demoCard("Accountant / Finance Manager", "Main demo: review Nino's Batumi trip, resolve receipts, and generate the report.", "#/dashboard")}
-      ${demoCard("Employee Receipt Upload", "Mock view for attaching a missing receipt to a trip expense.", "#/dashboard/receipts")}
-      ${demoCard("Company Admin", "Basic company settings, receipt rules, and finance defaults.", "#/dashboard/settings")}
+      ${card(1, "Company registers", "The employer creates the workspace and adds employees.")}
+      ${card(2, "Employee gets login", "Each employee gets their own limited portal.")}
+      ${card(3, "Finance sees everything", "The company dashboard stays the source of truth for all reports.")}
     </div>
   </section></div>`;
 }
@@ -328,8 +347,8 @@ function inviteRow(name, role, email, status) {
   return `<div class="invite-row"><span><strong>${name}</strong><small>${role} · ${email}</small></span>${badge(status)}</div>`;
 }
 
-function demoCard(title, copy, route) {
-  return `<article class="role-card"><div class="icon">${title[0]}</div><h3>${title}</h3><p>${copy}</p><br><button class="btn primary" onclick="setRoute('${route}')">Open demo</button></article>`;
+function demoCard(title, copy, route, action = "Open demo") {
+  return `<article class="role-card demo-card"><div class="icon">${title[0]}</div><h3>${title}</h3><p>${copy}</p><br><button class="btn primary" onclick="setRoute('${route}')">${action}</button></article>`;
 }
 
 const links = [

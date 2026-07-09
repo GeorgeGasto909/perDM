@@ -192,6 +192,23 @@ button { cursor: pointer; }
 .auth-card h1 { margin: 10px 0 12px; font-size: clamp(36px, 5vw, 58px); line-height: 1; }
 .auth-note { color: var(--muted); margin: 18px 0 0; }
 .portal-card { min-height: 240px; }
+.demo-choice-grid { align-items: stretch; }
+.demo-card {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+.demo-card .btn { margin-top: auto; }
+.demo-card:first-child {
+  border-color: #b8cff8;
+  background: linear-gradient(180deg, #ffffff, #f5f9ff);
+}
+.demo-card:nth-child(2) {
+  border-color: #b8eadf;
+  background: linear-gradient(180deg, #ffffff, #f3fbf8);
+}
+.demo-compare { margin-top: 16px; }
+.demo-compare h4 { margin: 0 0 8px; }
 .signup-flow {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
