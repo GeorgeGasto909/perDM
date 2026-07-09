@@ -76,13 +76,13 @@ const trips = [
 ];
 
 const baseExpenses = [
-  ["June 1", "Perdiemi Card", "Hotel Batumi", "Hotel", 720, "Attached", "Approved", "Invoice and receipt matched"],
-  ["June 2", "Perdiemi Card", "Restaurant", "Meals", 85, "Attached", "Approved", "Client dinner"],
+  ["June 1", "perDM Card", "Hotel Batumi", "Hotel", 720, "Attached", "Approved", "Invoice and receipt matched"],
+  ["June 2", "perDM Card", "Restaurant", "Meals", 85, "Attached", "Approved", "Client dinner"],
   ["June 3", "Cash", "Taxi", "Transport", 35, "Missing", "Needs receipt", "Receipt requested from employee"],
-  ["June 5", "Perdiemi Card", "Fuel Station", "Fuel", 160, "Attached", "Approved", "Sales route fuel"],
+  ["June 5", "perDM Card", "Fuel Station", "Fuel", 160, "Attached", "Approved", "Sales route fuel"],
   ["June 8", "Cash", "Parking", "Transport", 15, "Missing", "Needs receipt", "Small cash payment"],
-  ["June 12", "Perdiemi Card", "Hotel Batumi", "Hotel", 720, "Attached", "Pending review", "Second hotel invoice"],
-  ["June 18", "Perdiemi Card", "Restaurant", "Meals", 95, "Attached", "Pending review", "Partner lunch"],
+  ["June 12", "perDM Card", "Hotel Batumi", "Hotel", 720, "Attached", "Pending review", "Second hotel invoice"],
+  ["June 18", "perDM Card", "Restaurant", "Meals", 95, "Attached", "Pending review", "Partner lunch"],
   ["June 25", "Cash", "Local transport", "Transport", 80, "Attached", "Approved", "Airport transfer"],
 ];
 
@@ -125,7 +125,7 @@ function expenses() {
 }
 
 function brand() {
-  return `<a class="brand" href="#/"><span class="brand-mark"></span><span class="brand-word">Perdiemi</span></a>`;
+  return `<a class="brand" href="#/"><span class="brand-mark"></span><span class="brand-word">perDM</span></a>`;
 }
 
 function setRoute(route) {
@@ -164,7 +164,7 @@ function landing() {
         <div>
           <div class="eyebrow">Business travel expense documentation</div>
           <h1>Business trip expenses, organized in one place</h1>
-          <p>Perdiemi helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents.</p>
+          <p>perDM helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents.</p>
           <div class="hero-actions">
             <button class="btn primary" onclick="setRoute('#/signup')">Register company</button>
             <button class="btn" onclick="setRoute('#/login')">Log in</button>
@@ -193,7 +193,7 @@ function landing() {
         <h2>One system for the company and every travelling employee</h2>
         <p class="section-lead">The company signs up, adds employees, assigns trips and budgets, and gives each employee a login. Employees see their own budget, expenses, missing receipts, and upload actions. The company sees the full picture across everyone.</p>
         <div class="grid-3">
-          ${card(1, "Company registers", "The employer creates a Perdiemi company account and sets basic accounting rules.")}
+          ${card(1, "Company registers", "The employer creates a perDM company account and sets basic accounting rules.")}
           ${card(2, "Employees receive login", "Each employee gets access to their own trip, budget, receipt upload, and report status.")}
           ${card(3, "Company sees everything", "Finance managers monitor all employees, expenses, receipts, approvals, and exports.")}
         </div>
@@ -202,11 +202,11 @@ function landing() {
         <h2>Business trip reporting is still too manual</h2>
         <p class="section-lead">One completed trip can leave finance teams with card statements, paper receipts, cash notes, email attachments, and Excel files to reconcile by hand.</p>
         <div class="grid-3">
-          ${["Receipts are collected manually", "Expenses are scattered across card, cash, email, and paper", "Accountants spend hours checking documents", "Missing receipts create confusion", "Excel reports take too much time", "One trip can take days to document"].map((x, i) => card(i + 1, x, "Perdiemi brings the trip file, expense list, receipts, and report status into one clear workspace.")).join("")}
+          ${["Receipts are collected manually", "Expenses are scattered across card, cash, email, and paper", "Accountants spend hours checking documents", "Missing receipts create confusion", "Excel reports take too much time", "One trip can take days to document"].map((x, i) => card(i + 1, x, "perDM brings the trip file, expense list, receipts, and report status into one clear workspace.")).join("")}
         </div>
       </section>
       <section class="band"><div class="section" id="workflow">
-        <h2>Perdiemi turns every business trip into a ready-to-export expense file</h2>
+        <h2>perDM turns every business trip into a ready-to-export expense file</h2>
         <p class="section-lead">The company creates a trip, expenses are collected under that trip, receipts are attached, missing documents are flagged, and the accountant downloads the full report with one click.</p>
         <div class="grid-5">${["Create business trip", "Assign employee and budget", "Collect card and cash expenses", "Attach receipts and verify documents", "Export full report"].map((x, i) => step(i + 1, x)).join("")}</div>
       </div></section>
@@ -218,7 +218,7 @@ function landing() {
       </section>
       <section class="section future-strip">
         <h2>Future modules</h2>
-        <p class="section-lead">Later versions may add Perdiemi card integration, partner discounts, cashback, geolocation confirmation, and accounting software integrations. The first MVP focuses on documentation, verification, and report export.</p>
+        <p class="section-lead">Later versions may add perDM card integration, partner discounts, cashback, geolocation confirmation, and accounting software integrations. The first MVP focuses on documentation, verification, and report export.</p>
       </section>
     </main>
   </div>`;
@@ -242,7 +242,7 @@ function step(icon, title) {
 
 function demo() {
   return `<div class="page">${topNav()}<section class="section">
-    <div class="title-row"><div><h1>Perdiemi demo</h1><p>Follow the accountant workflow from trip review to report download.</p></div></div>
+    <div class="title-row"><div><h1>perDM demo</h1><p>Follow the accountant workflow from trip review to report download.</p></div></div>
     <div class="grid-3">
       ${demoCard("Accountant / Finance Manager", "Main demo: review Nino's Batumi trip, resolve receipts, and generate the report.", "#/dashboard")}
       ${demoCard("Employee Receipt Upload", "Mock view for attaching a missing receipt to a trip expense.", "#/dashboard/receipts")}
@@ -256,7 +256,7 @@ function loginPage() {
     <div class="auth-card">
       <div>
         <div class="eyebrow">Demo login</div>
-        <h1>Log in to Perdiemi</h1>
+        <h1>Log in to perDM</h1>
         <p class="section-lead">Choose how to enter the prototype. In the real product, companies create employee logins after registration.</p>
       </div>
       <div class="grid-2">
@@ -545,9 +545,9 @@ function settingsPage() {
 function futurePage() {
   return shell("future", `${title("Future modules", "These modules are intentionally outside the first MVP.")}
     <div class="grid-3">
-      ${card(1, "Perdiemi card integration", "Automatic card transactions and bank/payment provider connection.")}
+      ${card(1, "perDM card integration", "Automatic card transactions and bank/payment provider connection.")}
       ${card(2, "Geolocation confirmation", "Confirm business trip distance and office-area status.")}
-      ${card(3, "Partner discounts", "Optional hotel, restaurant, and fuel discounts for Perdiemi users.")}
+      ${card(3, "Partner discounts", "Optional hotel, restaurant, and fuel discounts for perDM users.")}
       ${card(4, "Cashback system", "Optional cashback logic and savings reports.")}
       ${card(5, "Accounting software integrations", "Exports, APIs, and sync with external accounting systems.")}
     </div>`);

@@ -1,6 +1,6 @@
-# Perdiemi MVP Prototype
+# perDM MVP Prototype
 
-Clickable SaaS prototype for Perdiemi, focused on business trip expense documentation, receipt verification, and report export for accountants and finance teams.
+Clickable SaaS prototype for perDM, focused on business trip expense documentation, receipt verification, and report export for accountants and finance teams.
 
 ## Open locally
 
