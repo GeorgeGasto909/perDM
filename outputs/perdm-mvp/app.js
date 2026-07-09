@@ -8,6 +8,8 @@ const state = {
   employeeReceiptUploaded: false,
   missionFormSubmitted: false,
   lang: "ka",
+  cardFrozen: false,
+  paymentSimulated: false,
 };
 
 const company = {
@@ -96,6 +98,14 @@ const employees = [
   ["Ana Maisuradze", "Marketing Coordinator", "Marketing", 0, 1, 340, 1],
 ];
 
+const cardTransactions = [
+  ["June 1", "Hotel Batumi", "Hotel", 720, "Approved"],
+  ["June 2", "Restaurant", "Meals", 85, "Approved"],
+  ["June 5", "Fuel Station", "Fuel", 160, "Approved"],
+  ["June 12", "Hotel Batumi", "Hotel", 720, "Pending review"],
+  ["June 18", "Restaurant", "Meals", 95, "Pending review"],
+];
+
 const app = document.getElementById("app");
 
 function money(value) {
@@ -177,7 +187,7 @@ function landing() {
         <div>
           <div class="eyebrow">${ka ? "მივლინების დოკუმენტაცია და ხარჯების კონტროლი" : "Business travel expense documentation"}</div>
           <h1>${ka ? "მივლინების ფორმები და ხარჯები ერთ სივრცეში" : "Business trip expenses, organized in one place"}</h1>
-          <p>${ka ? "perDM ეხმარება კომპანიებს თანამშრომლების მივლინების ფორმების, ხელმოწერების, ქვითრების, ხარჯებისა და ანგარიშების ერთ სისტემაში მართვაში." : "perDM helps companies collect, verify, and export business travel expenses without manual receipt chaos, Excel work, and scattered documents."}</p>
+          <p>${ka ? "perDM ეხმარება კომპანიებს თანამშრომლების მივლინების ფორმების, ელექტრონული ბარათების, გადახდების, ქვითრების, ხარჯებისა და ანგარიშების ერთ სისტემაში მართვაში." : "perDM helps companies manage business trip forms, virtual cards, payments, receipts, expenses, and reports in one connected platform."}</p>
           <div class="hero-actions">
             <button class="btn primary" onclick="setRoute('#/demo')">${ka ? "დემოს ნახვა" : "View demo"}</button>
             <button class="btn" onclick="setRoute('#/signup')">${ka ? "კომპანიის რეგისტრაცია" : "Register company"}</button>
@@ -192,12 +202,12 @@ function landing() {
           <div class="mini-grid">
             ${mini(ka ? "კომპანიის ანგარიში" : "Company account", "Demo Company LLC")}
             ${mini(ka ? "თანამშრომლები" : "Employees", "5 active users")}
-            ${mini(ka ? "მივლინების ბიუჯეტი" : "Assigned budget", "3,000 GEL")}
+            ${mini(ka ? "ელ. ბარათის ბალანსი" : "Virtual card balance", "3,000 GEL")}
             ${mini(ka ? "მივლინების ფორმა" : "Mission form", state.missionFormSubmitted ? (ka ? "დადასტურებულია" : "Confirmed") : (ka ? "გასაგზავნია" : "To send"))}
           </div>
           <div class="preview-table">
             ${previewRow(ka ? "დამსაქმებელი" : "Company admin", ka ? "ხედავს თანამშრომლებს, ფორმებს, ხარჯებს და ანგარიშებს" : "Sees every employee, trip, budget, and report", ka ? "ყველა მონაცემი" : "All data", ka ? "აქტიური" : "Active")}
-            ${previewRow("Nino Beridze", ka ? "თანამშრომლის პორტალი" : "Employee portal", "250 GEL left", ka ? "ფორმა შესავსებია" : "Form pending")}
+            ${previewRow("Nino Beridze", ka ? "თანამშრომლის perDM ბარათი" : "Employee perDM card", "250 GEL left", state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"))}
             ${previewRow(ka ? "მივლინების ფორმა" : "Mission form", ka ? "ლინკით ივსება და ხელმოწერით დასტურდება" : "Shared by link, signed and confirmed", ka ? "ლინკი" : "Link", state.missionFormSubmitted ? (ka ? "ჩაბარებულია" : "Submitted") : (ka ? "გასაგზავნია" : "Pending"))}
             ${previewRow(ka ? "ბუღალტერი" : "Accountant", ka ? "ამოწმებს და აგენერირებს ანგარიშს" : "Approves expenses and exports reports", ka ? "ანგარიშები" : "Reports", ka ? "აქტიური" : "Active")}
           </div>
@@ -208,8 +218,8 @@ function landing() {
         <p class="section-lead">${ka ? "კომპანია რეგისტრირდება, ამატებს თანამშრომლებს, უგზავნის მივლინების ფორმის ლინკს, ხოლო თანამშრომელი ავსებს ფორმას, აწერს ხელს და ადასტურებს. დამსაქმებელი ყველაფერს ხედავს თავის პანელში." : "The company signs up, adds employees, assigns trips and budgets, and gives each employee a login. Employees see their own budget, expenses, missing receipts, and upload actions. The company sees the full picture across everyone."}</p>
         <div class="grid-3">
           ${card(1, ka ? "კომპანია რეგისტრირდება" : "Company registers", ka ? "დამსაქმებელი ქმნის perDM-ის კომპანიის ანგარიშს და ამატებს თანამშრომლებს." : "The employer creates a perDM company account and sets basic accounting rules.")}
-          ${card(2, ka ? "თანამშრომელი იღებს ლინკს" : "Employees receive login", ka ? "თანამშრომელი ავსებს მივლინების ფორმას, აწერს ხელს და ადასტურებს." : "Each employee gets access to their own trip, budget, receipt upload, and report status.")}
-          ${card(3, ka ? "დამსაქმებელი ხედავს ყველაფერს" : "Company sees everything", ka ? "დამსაქმებელი ხედავს ფორმის სტატუსს, ხარჯებს, ქვითრებს და ანგარიშებს." : "Finance managers monitor all employees, expenses, receipts, approvals, and exports.")}
+          ${card(2, ka ? "თანამშრომელი იღებს ლინკს და ბარათს" : "Employees receive login and card", ka ? "თანამშრომელი ავსებს ფორმას, იღებს მივლინების ბიუჯეტს ელექტრონულ ბარათზე და ტვირთავს ქვითრებს." : "Each employee gets access to their trip, virtual card budget, receipt upload, and report status.")}
+          ${card(3, ka ? "დამსაქმებელი ხედავს გადახდებს" : "Company sees payments", ka ? "დამსაქმებელი ხედავს ფორმის სტატუსს, ბარათის ტრანზაქციებს, ქვითრებს და ანგარიშებს." : "Finance managers monitor forms, card transactions, receipts, approvals, and exports.")}
         </div>
       </div></section>
       <section class="section mission-highlight">
@@ -377,6 +387,7 @@ function demoCard(title, copy, route, action = "Open demo") {
 const links = [
   ["overview", "Overview", "#/dashboard"],
   ["missionForms", "Mission Forms", "#/dashboard/mission-forms"],
+  ["payments", "Wallet & Cards", "#/dashboard/payments"],
   ["trips", "Business Trips", "#/dashboard/trips"],
   ["employees", "Employees", "#/dashboard/employees"],
   ["expenses", "Expenses", "#/dashboard/expenses"],
@@ -401,7 +412,7 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "Mission Forms": "✎", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
@@ -410,11 +421,11 @@ function dashboard() {
   return shell("overview", `${title(isKa() ? "მიმოხილვა" : "Overview", isKa() ? "მივლინების ფორმები, ხარჯები და ანგარიშები ერთ სივრცეშია." : "Everything related to a business trip is collected in one place.", `<button class="btn primary" onclick="setRoute('#/dashboard/mission-forms')">${isKa() ? "მივლინების ფორმები" : "Mission forms"}</button>`)}
     <div class="stats">
       ${stat(isKa() ? "მივლინების ფორმები" : "Mission forms", state.missionFormSubmitted ? "1" : "0", state.missionFormSubmitted ? (isKa() ? "დადასტურებული" : "Confirmed") : (isKa() ? "ელოდება შევსებას" : "Waiting for employee"))}
+      ${stat(isKa() ? "კომპანიის wallet" : "Company wallet", money(18400), isKa() ? "ვირტუალური ბარათებისთვის" : "For virtual cards")}
+      ${stat(isKa() ? "აქტიური ბარათები" : "Active cards", state.cardFrozen ? "4" : "5", state.cardFrozen ? (isKa() ? "1 გაყინული" : "1 frozen") : (isKa() ? "ყველა აქტიური" : "All active"))}
       ${stat("Active business trips", "4", "2 end this week")}
       ${stat("Completed trips waiting for report", "3", "Nino needs review")}
       ${stat("Expenses this month", money(8420), "Card and cash combined")}
-      ${stat("Missing receipts", `${t.missing + 1}`, "Across all trips")}
-      ${stat("Pending approvals", `${t.pending + 3}`, "Need accountant review")}
     </div>
     <div class="dash-grid">
       <section class="panel"><h3>${isKa() ? "ყურადღებას საჭიროებს" : "Items requiring attention"}</h3>${attention("Nino Beridze", isKa() ? "მივლინების ფორმა" : "Mission form", state.missionFormSubmitted ? (isKa() ? "დადასტურებულია" : "Confirmed") : (isKa() ? "გასაგზავნია / შესავსებია" : "Pending employee confirmation"), "#/dashboard/mission-forms")}${attention("Nino Beridze", "Batumi business trip", `${t.missing} missing receipts`, "#/dashboard/trips/nino-batumi")}${attention("Giorgi Kapanadze", "Kutaisi field visit", "Ready for export", "#/dashboard/trips")}</section>
@@ -438,6 +449,61 @@ function missionFormsPage() {
       </tbody></table>
     </section>
     ${state.missionFormSubmitted ? missionFormPreview() : `<section class="empty" style="margin-top:16px">${isKa() ? "ფორმა ჯერ არ არის დადასტურებული. თანამშრომლის დადასტურების შემდეგ აქ გამოჩნდება შევსებული ვერსია." : "The form is not confirmed yet. Once the employee submits it, the completed version appears here."}</section>`}`);
+}
+
+function paymentsPage() {
+  const ka = isKa();
+  const simulated = state.paymentSimulated ? [["June 29", "Pharmacy", "Other", 28, "Pending review"]] : [];
+  const rows = [...cardTransactions, ...simulated];
+  return shell("payments", `${title(ka ? "Wallet და ელექტრონული ბარათები" : "Wallet & virtual cards", ka ? "კომპანია ავსებს wallet-ს, ანაწილებს თანხას თანამშრომლების perDM ბარათებზე და აკონტროლებს ტრანზაქციებს." : "The company funds a wallet, assigns balances to employee perDM cards, and monitors every transaction.", `<button class="btn primary" onclick="state.paymentSimulated=true;render()">${ka ? "გადახდის სიმულაცია" : "Simulate payment"}</button>`)}
+    <div class="stats">
+      ${stat(ka ? "კომპანიის wallet" : "Company wallet", money(18400), ka ? "ხელმისაწვდომი თანხა" : "Available funds")}
+      ${stat(ka ? "გამოყოფილი ბიუჯეტი" : "Allocated to cards", money(6400), ka ? "5 თანამშრომელი" : "5 employees")}
+      ${stat(ka ? "Nino-ს ბარათი" : "Nino's card", money(3000 - nino().total - (state.paymentSimulated ? 28 : 0)), state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"))}
+      ${stat(ka ? "თვიური card spend" : "Monthly card spend", money(8420), ka ? "mock ტრანზაქციები" : "Mock transactions")}
+    </div>
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "perDM Business Travel Card" : "perDM Business Travel Card"}</h3>
+        ${virtualCard()}
+        <div class="action-row">
+          <button class="btn" onclick="state.cardFrozen=!state.cardFrozen;render()">${state.cardFrozen ? (ka ? "ბარათის გააქტიურება" : "Unfreeze card") : (ka ? "ბარათის გაყინვა" : "Freeze card")}</button>
+          <button class="btn" onclick="state.paymentSimulated=true;render()">${ka ? "ტრანზაქციის დამატება" : "Add mock transaction"}</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "ბარათის წესები" : "Card controls"}</h3>
+        <div class="form-grid">
+          ${field(ka ? "დღიური ლიმიტი" : "Daily limit", "500 GEL")}
+          ${field(ka ? "სასტუმრო" : "Hotel category", "Allowed", "select")}
+          ${field(ka ? "საკვები" : "Meals category", "Allowed", "select")}
+          ${field(ka ? "საწვავი" : "Fuel category", "Allowed", "select")}
+          ${field(ka ? "ქვითარი სავალდებულოა ზემოთ" : "Receipt required above", "40 GEL")}
+          ${field(ka ? "ბარათის სტატუსი" : "Card status", state.cardFrozen ? (ka ? "გაყინულია" : "Frozen") : (ka ? "აქტიური" : "Active"), "select")}
+        </div>
+      </section>
+    </div>
+    <section class="panel table-wrap" style="margin-top:16px">
+      <h3>${ka ? "ბარათის ტრანზაქციები" : "Card transactions"}</h3>
+      ${paymentTable(rows)}
+    </section>`);
+}
+
+function virtualCard() {
+  return `<div class="virtual-card ${state.cardFrozen ? "frozen" : ""}">
+    <div class="brand"><span class="brand-mark"></span><span class="brand-word">perDM</span></div>
+    <div>
+      <div class="card-number">**** **** **** 4829</div>
+      <div class="virtual-card-row"><span>Nino Beridze</span><span>${state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active")}</span></div>
+      <div class="virtual-card-row"><span>${company.name}</span><span>${money(3000 - nino().total - (state.paymentSimulated ? 28 : 0))}</span></div>
+    </div>
+  </div>`;
+}
+
+function paymentTable(rows) {
+  return `<table><thead><tr><th>${isKa() ? "თარიღი" : "Date"}</th><th>${isKa() ? "მერჩანტი" : "Merchant"}</th><th>${isKa() ? "კატეგორია" : "Category"}</th><th>${isKa() ? "თანხა" : "Amount"}</th><th>${isKa() ? "სტატუსი" : "Status"}</th></tr></thead><tbody>
+    ${rows.map((r) => `<tr><td>${r[0]}</td><td><strong>${r[1]}</strong></td><td>${r[2]}</td><td>${money(r[3])}</td><td>${badge(r[4])}</td></tr>`).join("")}
+  </tbody></table>`;
 }
 
 function attention(name, trip, note, route) {
@@ -616,6 +682,7 @@ function futurePage() {
 const employeeLinks = [
   ["overview", "My Overview", "#/employee"],
   ["missionForm", "Mission Form", "#/mission-form"],
+  ["card", "My Card", "#/employee/card"],
   ["trip", "My Trip", "#/employee/trip"],
   ["expenses", "My Expenses", "#/employee/expenses"],
   ["receipts", "Upload Receipts", "#/employee/receipts"],
@@ -639,6 +706,7 @@ function employeeShell(active, content) {
 function employeePortal(view = "overview") {
   const pages = {
     overview: employeeOverview,
+    card: employeeCard,
     trip: employeeTrip,
     expenses: employeeExpenses,
     receipts: employeeReceipts,
@@ -653,6 +721,7 @@ function employeeOverview() {
     <div class="stats">
       ${stat(isKa() ? "ფორმის სტატუსი" : "Form status", state.missionFormSubmitted ? (isKa() ? "დადასტურებულია" : "Confirmed") : (isKa() ? "შესავსებია" : "To complete"), isKa() ? "ხელმოწერა სავალდებულოა" : "Signature required")}
       ${stat("Assigned budget", money(t.budget), "Batumi business trip")}
+      ${stat(isKa() ? "ბარათის ბალანსი" : "Card balance", money(t.budget - t.total - (state.paymentSimulated ? 28 : 0)), state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active"))}
       ${stat("Spent", money(t.total), "Card + cash")}
       ${stat("Remaining", money(t.budget - t.total), "Available budget")}
       ${stat("Receipts to upload", String(t.missing), "Required before report")}
@@ -662,6 +731,7 @@ function employeeOverview() {
       <section class="panel">
         <h3>${isKa() ? "შენი დავალებები" : "What you need to do"}</h3>
         ${attention(isKa() ? "მივლინების ფორმის შევსება" : "Complete mission form", isKa() ? "ფორმა უნდა შეივსოს და დადასტურდეს ხელმოწერით" : "Fill and confirm the form with signature", state.missionFormSubmitted ? (isKa() ? "შესრულებულია" : "Done") : (isKa() ? "სავალდებულო" : "Required"), "#/mission-form")}
+        ${attention(isKa() ? "ბარათის ბალანსის შემოწმება" : "Check card balance", isKa() ? "perDM ელექტრონული ბარათი მივლინებისთვის" : "perDM virtual card for this business trip", state.cardFrozen ? (isKa() ? "გაყინულია" : "Frozen") : (isKa() ? "აქტიური" : "Active"), "#/employee/card")}
         ${attention("Upload missing receipt", "Taxi - 35 GEL, June 3", state.receiptAttached ? "Done" : "Needs receipt", "#/employee/receipts")}
         ${attention("Check expense list", "Confirm card and cash payments are correct", "Open", "#/employee/expenses")}
         ${attention("Submit trip report", "Send completed trip file to finance", "Pending", "#/employee/report")}
@@ -670,8 +740,33 @@ function employeeOverview() {
         <h3>Employee view</h3>
         <p class="section-lead">${isKa() ? "თანამშრომელი ვერ ხედავს კომპანიის მთლიან მონაცემებს. ხედავს მხოლოდ საკუთარ ფორმას, ბიუჯეტს, ხარჯებს და ასატვირთ დოკუმენტებს." : "The employee does not see company-wide data. They only see their own budget, trip, expenses, missing documents, and report submission status."}</p>
         <button class="btn primary" onclick="setRoute('#/mission-form')">${isKa() ? "მივლინების ფორმის შევსება" : "Complete mission form"}</button>
+        <button class="btn" onclick="setRoute('#/employee/card')">${isKa() ? "ბარათის ნახვა" : "View card"}</button>
       </section>
     </div>`;
+}
+
+function employeeCard() {
+  const ka = isKa();
+  const rows = [...cardTransactions, ...(state.paymentSimulated ? [["June 29", "Pharmacy", "Other", 28, "Pending review"]] : [])];
+  return `${title(ka ? "ჩემი perDM ბარათი" : "My perDM card", ka ? "ეს არის მივლინებისთვის გამოყოფილი ელექტრონული ბარათი. თანამშრომელი ხედავს ბალანსს, ლიმიტებს და საკუთარ ტრანზაქციებს." : "This is the virtual card assigned for the business trip. The employee sees balance, limits, and their own transactions.")}
+    <div class="dash-grid">
+      <section class="panel">
+        ${virtualCard()}
+        <div class="stats mini-stats">
+          ${stat(ka ? "ხელმისაწვდომია" : "Available", money(3000 - nino().total - (state.paymentSimulated ? 28 : 0)), ka ? "მივლინების ბალანსი" : "Trip balance")}
+          ${stat(ka ? "დღიური ლიმიტი" : "Daily limit", "500 GEL", ka ? "კომპანიის წესით" : "Company policy")}
+        </div>
+        <div class="action-row">
+          <button class="btn primary" onclick="state.paymentSimulated=true;render()">${ka ? "გადახდის სიმულაცია" : "Simulate card payment"}</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "რა შეუძლია თანამშრომელს" : "Employee card actions"}</h3>
+        <p class="section-lead">${ka ? "თანამშრომელს შეუძლია ბალანსის ნახვა, ტრანზაქციების შემოწმება, ქვითრის მიბმა და საჭიროების შემთხვევაში ბარათის პრობლემის შეტყობინება." : "The employee can view balance, check transactions, attach receipts, and report a card issue if needed."}</p>
+        <button class="btn" onclick="setRoute('#/employee/receipts')">${ka ? "ქვითრის მიბმა" : "Attach receipt"}</button>
+      </section>
+    </div>
+    <section class="panel table-wrap" style="margin-top:16px"><h3>${ka ? "ჩემი ტრანზაქციები" : "My transactions"}</h3>${paymentTable(rows)}</section>`;
 }
 
 function missionFormPage() {
@@ -801,6 +896,7 @@ function render() {
   if (hash === "#/mission-form") html = missionFormPage();
   if (hash === "#/dashboard") html = dashboard();
   if (hash === "#/dashboard/mission-forms") html = missionFormsPage();
+  if (hash === "#/dashboard/payments") html = paymentsPage();
   if (hash === "#/dashboard/trips") html = tripsPage();
   if (hash.startsWith("#/dashboard/trips/")) html = tripDetail();
   if (hash === "#/dashboard/employees") html = employeesPage();
@@ -811,6 +907,7 @@ function render() {
   if (hash === "#/dashboard/future-modules") html = futurePage();
   if (hash === "#/employee") html = employeePortal("overview");
   if (hash === "#/employee/mission-form") html = missionFormPage();
+  if (hash === "#/employee/card") html = employeePortal("card");
   if (hash === "#/employee/trip") html = employeePortal("trip");
   if (hash === "#/employee/expenses") html = employeePortal("expenses");
   if (hash === "#/employee/receipts") html = employeePortal("receipts");
