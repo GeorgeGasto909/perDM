@@ -12,6 +12,9 @@ const state = {
   paymentSimulated: false,
   geoActive: true,
   budgetDistributed: false,
+  locationShared: true,
+  distanceKm: 18.4,
+  limitAlert: false,
 };
 
 const company = {
@@ -420,6 +423,7 @@ const links = [
   ["payments", "Wallet & Cards", "#/dashboard/payments"],
   ["policies", "Travel Policies", "#/dashboard/policies"],
   ["legal", "Legal Rules", "#/dashboard/legal"],
+  ["locations", "Live Location", "#/dashboard/locations"],
   ["budgets", "Budgets", "#/dashboard/budgets"],
   ["trips", "Business Trips", "#/dashboard/trips"],
   ["employees", "Employees", "#/dashboard/employees"],
@@ -445,7 +449,7 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", "Live Location": "⌖", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
@@ -454,6 +458,7 @@ function dashboard() {
   return shell("overview", `${title(isKa() ? "მიმოხილვა" : "Overview", isKa() ? "მივლინების ფორმები, ხარჯები და ანგარიშები ერთ სივრცეშია." : "Everything related to a business trip is collected in one place.", `<button class="btn primary" onclick="setRoute('#/dashboard/mission-forms')">${isKa() ? "მივლინების ფორმები" : "Mission forms"}</button>`)}
     <div class="stats">
       ${stat(isKa() ? "მივლინების ფორმები" : "Mission forms", state.missionFormSubmitted ? "1" : "0", state.missionFormSubmitted ? (isKa() ? "დადასტურებული" : "Confirmed") : (isKa() ? "ელოდება შევსებას" : "Waiting for employee"))}
+      ${stat(isKa() ? "ლოკაცია" : "Location", state.locationShared ? (isKa() ? "გაზიარებულია" : "Shared") : (isKa() ? "გამორთულია" : "Off"), `${state.distanceKm} km`)}
       ${stat(isKa() ? "კომპანიის wallet" : "Company wallet", money(18400), isKa() ? "ვირტუალური ბარათებისთვის" : "For virtual cards")}
       ${stat(isKa() ? "აქტიური ბარათები" : "Active cards", state.cardFrozen ? "4" : "5", state.cardFrozen ? (isKa() ? "1 გაყინული" : "1 frozen") : (isKa() ? "ყველა აქტიური" : "All active"))}
       ${stat("Active business trips", "4", "2 end this week")}
@@ -582,6 +587,35 @@ function legalRulesPage() {
 
 function legalRow(title, text) {
   return `<div class="legal-row"><strong>${title}</strong><p>${text}</p></div>`;
+}
+
+function locationsPage() {
+  const ka = isKa();
+  const overPolicy = state.distanceKm >= legalRules.companyActivationThreshold;
+  const overLegal = state.distanceKm >= legalRules.domesticDistanceThreshold;
+  return shell("locations", `${title(ka ? "ცოცხალი ლოკაცია და გაფრთხილებები" : "Live location and alerts", ka ? "კომპანია ხედავს თანამშრომლის გაზიარებულ ლოკაციას, მანძილს სამუშაო ადგილიდან და სისტემურ გაფრთხილებებს." : "The company sees shared employee location, distance from workplace, and system alerts.", `<button class="btn primary" onclick="state.limitAlert=true;render()">${ka ? "ლიმიტის გაფრთხილების სიმულაცია" : "Simulate limit alert"}</button>`)}
+    <div class="trip-banner"><span>${state.locationShared ? (ka ? `ნინო ბერიძე ლოკაციას აზიარებს. სამუშაო ადგილიდან ${state.distanceKm}კმ.` : `Nino Beridze is sharing location. ${state.distanceKm} km from workplace.`) : (ka ? "ლოკაციის გაზიარება გამორთულია." : "Location sharing is off.")}</span>${badge(state.locationShared ? (ka ? "Live" : "Live") : (ka ? "Off" : "Off"))}</div>
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "ლოკაციის რუკა" : "Location map"}</h3>
+        <div class="map-mock"><span class="route-line"></span><span class="pin office"></span><span class="pin dest"></span></div>
+        <div class="grid-3">
+          ${stat(ka ? "სამუშაო ადგილი" : "Workplace", company.workplace, company.workplaceCoords)}
+          ${stat(ka ? "თანამშრომლის ლოკაცია" : "Employee location", "Batumi road checkpoint", "41.9200, 45.0010")}
+          ${stat(ka ? "მანძილი" : "Distance", `${state.distanceKm} km`, ka ? "რუკის ალგორითმით" : "Route algorithm")}
+        </div>
+      </section>
+      <section class="panel">
+        <h3>${ka ? "გაფრთხილებები" : "Alerts"}</h3>
+        ${alertBox(overPolicy ? (ka ? "12კმ ზღვარი გადალახულია: მივლინება აქტიურია." : "12 km threshold crossed: trip is active.") : (ka ? "12კმ ზღვარი ჯერ არ არის გადალახული." : "12 km threshold not crossed yet."), overPolicy ? "green" : "amber")}
+        ${alertBox(overLegal ? (ka ? "30კმ კანონით დღიური ნორმის შემოწმება საჭიროა." : "30 km legal daily allowance check required.") : (ka ? "30კმ-მდეა: იმავე დღეს დაბრუნებისას მხოლოდ მგზავრობა." : "Under 30 km: same-day return means travel cost only."), overLegal ? "green" : "amber")}
+        ${alertBox(state.limitAlert ? (ka ? "გაფრთხილება: ბარათის დღიური ლიმიტის 90% გამოყენებულია." : "Alert: 90% of daily card limit used.") : (ka ? "ბარათის ლიმიტი ნორმაშია." : "Card limit is within policy."), state.limitAlert ? "red" : "green")}
+      </section>
+    </div>`);
+}
+
+function alertBox(text, tone) {
+  return `<div class="alert-box ${tone}">${text}</div>`;
 }
 
 function budgetsPage() {
@@ -939,6 +973,8 @@ function missionFormPreview() {
 function employeeTrip() {
   const t = nino();
   const ka = isKa();
+  const overPolicy = state.distanceKm >= legalRules.companyActivationThreshold;
+  const overLegal = state.distanceKm >= legalRules.domesticDistanceThreshold;
   return `${title(ka ? "ჩემი Batumi მივლინება" : "My Batumi trip", ka ? "მივლინების სტატუსი გეოლოკაციაზე დაყრდნობით ავტომატურად აქტიურდება." : "Trip status is automatically activated based on geolocation.")}
     <section class="panel trip-hero">
       <div>
@@ -948,7 +984,11 @@ function employeeTrip() {
       </div>
       <div class="budget-box"><span>Remaining budget</span><strong>${money(t.budget - t.total)}</strong><small>${money(t.total)} spent</small></div>
     </section>
-    <div class="trip-banner"><span>${ka ? "მივლინება ავტომატურად აქტიურია კომპანიის წესით: ოფისიდან 18.4კმ, activation ზღვარი 12კმ. კანონის 30კმ დღიური ნორმა ამ მაგალითში ჯერ არ ირთვება." : "Business trip automatically active by company policy: 18.4 km from office, activation threshold 12 km. The legal 30 km daily allowance rule is not triggered in this example."}</span>${badge(ka ? "მოგზაურობა აქტიურია" : "Trip active")}</div>
+    <div class="trip-banner"><span>${state.locationShared ? (ka ? `ლოკაცია გაზიარებულია. ${state.distanceKm}კმ სამუშაო ადგილიდან.` : `Location shared. ${state.distanceKm} km from workplace.`) : (ka ? "ლოკაციის გაზიარება გამორთულია; კომპანია ვერ ხედავს რეალურ სტატუსს." : "Location sharing is off; company cannot see live status.")}</span>${badge(state.locationShared ? (ka ? "ლოკაცია ჩართულია" : "Location on") : (ka ? "ლოკაცია გამორთულია" : "Location off"))}</div>
+    <div class="action-row">
+      <button class="btn primary" onclick="state.locationShared=!state.locationShared;render()">${state.locationShared ? (ka ? "ლოკაციის გაზიარების გამორთვა" : "Stop sharing location") : (ka ? "ლოკაციის გაზიარება" : "Share location")}</button>
+      <button class="btn" onclick="state.distanceKm=32;state.limitAlert=true;render()">${ka ? "ლიმიტის გადაჭარბების სიმულაცია" : "Simulate threshold alert"}</button>
+    </div>
     <div class="dash-grid">
       <section class="panel">
         <h3>${ka ? "გეოლოკაციის სიმულაცია" : "Geolocation simulation"}</h3>
@@ -957,9 +997,11 @@ function employeeTrip() {
       <section class="panel">
         <h3>${ka ? "სტატუსის წესები" : "Status rules"}</h3>
         ${stat(ka ? "ოფისი" : "Office", "Tbilisi HQ", ka ? "საწყისი წერტილი" : "Start point")}
-        ${stat(ka ? "მიმდინარე მანძილი" : "Current distance", "18.4 km", ka ? "კომპანიის წესი: 12კმ+" : "Company rule: 12 km+")}
-        ${stat(ka ? "დღიური ნორმის წესი" : "Daily allowance rule", "30 km", ka ? "30კმ-მდე მხოლოდ მგზავრობა" : "Under 30 km: travel only")}
+        ${stat(ka ? "მიმდინარე მანძილი" : "Current distance", `${state.distanceKm} km`, ka ? "კომპანიის წესი: 12კმ+" : "Company rule: 12 km+")}
+        ${stat(ka ? "დღიური ნორმის წესი" : "Daily allowance rule", "30 km", overLegal ? (ka ? "დღიური ნორმა შესამოწმებელია" : "Daily allowance check") : (ka ? "30კმ-მდე მხოლოდ მგზავრობა" : "Under 30 km: travel only"))}
         ${stat(ka ? "ქვითრები" : "Receipts", `${t.missing}`, ka ? "დარჩენილი ასატვირთი" : "Still required")}
+        ${alertBox(overPolicy ? (ka ? "გაფრთხილება: 12კმ ზღვარი გადალახულია, მივლინება აქტიურია." : "Alert: 12 km threshold crossed, trip is active.") : (ka ? "ჯერ 12კმ ზღვარს ქვემოთაა." : "Below 12 km threshold."), overPolicy ? "green" : "amber")}
+        ${alertBox(state.limitAlert ? (ka ? "გაფრთხილება: ლიმიტს უახლოვდები ან გადააჭარბე." : "Warning: you are near or over a limit.") : (ka ? "ლიმიტები ნორმაშია." : "Limits are within policy."), state.limitAlert ? "red" : "green")}
       </section>
     </div>`;
 }
@@ -1097,6 +1139,7 @@ function render() {
   if (hash === "#/dashboard/payments") html = paymentsPage();
   if (hash === "#/dashboard/policies") html = policiesPage();
   if (hash === "#/dashboard/legal") html = legalRulesPage();
+  if (hash === "#/dashboard/locations") html = locationsPage();
   if (hash === "#/dashboard/budgets") html = budgetsPage();
   if (hash === "#/dashboard/trips") html = tripsPage();
   if (hash.startsWith("#/dashboard/trips/")) html = tripDetail();

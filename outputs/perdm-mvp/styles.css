@@ -441,6 +441,28 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
   margin: 6px 0 0;
   line-height: 1.45;
 }
+.alert-box {
+  border-radius: 8px;
+  padding: 13px;
+  margin: 10px 0;
+  font-weight: 780;
+  border: 1px solid var(--line);
+}
+.alert-box.green {
+  background: #ecfbf7;
+  border-color: #b8eadf;
+  color: #0f725d;
+}
+.alert-box.amber {
+  background: #fff8ea;
+  border-color: #ffe0a3;
+  color: #9b5b00;
+}
+.alert-box.red {
+  background: #fff0f2;
+  border-color: #ffc6cf;
+  color: #b42336;
+}
 .action-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
 .trip-hero {
   display: flex;
