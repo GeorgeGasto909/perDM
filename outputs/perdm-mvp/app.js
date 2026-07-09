@@ -19,6 +19,15 @@ const company = {
   id: "GE-204889321",
   accountant: "Tamar Finance",
   email: "finance@demo-company.ge",
+  workplace: "Tbilisi HQ, 12 Rustaveli Ave",
+  workplaceCoords: "41.7151, 44.8271",
+};
+
+const legalRules = {
+  domesticDailyAllowance: 30,
+  domesticDistanceThreshold: 30,
+  companyActivationThreshold: 12,
+  longTermDays: 30,
 };
 
 const trips = [
@@ -196,7 +205,7 @@ function landing() {
         <div>
           <div class="eyebrow">${ka ? "მივლინების დოკუმენტაცია და ხარჯების კონტროლი" : "Business travel expense documentation"}</div>
           <h1>${ka ? "მივლინების ფორმები და ხარჯები ერთ სივრცეში" : "Business trip expenses, organized in one place"}</h1>
-          <p>${ka ? "perDM ეხმარება კომპანიებს თანამშრომლების მივლინების ფორმების, ელექტრონული ბარათების, გადახდების, ქვითრების, ხარჯებისა და ანგარიშების ერთ სისტემაში მართვაში." : "perDM helps companies manage business trip forms, virtual cards, payments, receipts, expenses, and reports in one connected platform."}</p>
+          <p>${ka ? "perDM ეხმარება კომპანიებს სამუშაო ადგილის ლოკაციაზე, კილომეტრებზე, მივლინების ფორმებზე, ელექტრონულ ბარათებზე, გადახდებზე, ქვითრებსა და ანგარიშებზე დაფუძნებული პროცესის მართვაში." : "perDM helps companies manage workplace location, distance-based travel rules, business trip forms, virtual cards, payments, receipts, and reports in one connected platform."}</p>
           <div class="hero-actions">
             <button class="btn primary" onclick="setRoute('#/demo')">${ka ? "დემოს ნახვა" : "View demo"}</button>
             <button class="btn" onclick="setRoute('#/signup')">${ka ? "კომპანიის რეგისტრაცია" : "Register company"}</button>
@@ -232,6 +241,7 @@ function landing() {
           ${card(4, ka ? "გეოლოკაცია ააქტიურებს მივლინებას" : "Geolocation activates the trip", ka ? "თუ თანამშრომელი ოფისიდან 12კმ-ზე მეტ მანძილზეა, სისტემა აჩვენებს აქტიურ მივლინებას." : "If the employee is more than 12 km from the office, the trip becomes active in the interface.")}
           ${card(5, ka ? "პარტნიორები ქმნიან შეთავაზებებს" : "Partners create offers", ka ? "სასტუმროები, საწვავი და კვების ობიექტები ქმნიან ფასდაკლებებს perDM ბარათისთვის." : "Hotels, fuel stations, and restaurants can create discounts for perDM card users.")}
           ${card(6, ka ? "ქეშბექი და ბონუსი" : "Cashback and bonus tracking", ka ? "თანამშრომელი ხედავს მიღებულ ქეშბექს, კომპანია კი ჯამურ დაზოგვას." : "Employees see earned cashback, while the company sees total savings.")}
+          ${card(7, ka ? "კანონთან შესაბამისობა" : "Legal rule checks", ka ? "სისტემა ითვლის მანძილს მუდმივი სამუშაო ადგილიდან და აჩვენებს 30კმ წესს, დღიურ ნორმას და დოკუმენტაციის სტატუსს." : "The system calculates distance from the permanent workplace and shows 30 km rules, daily allowance, and documentation status.")}
         </div>
       </div></section>
       <section class="section mission-highlight">
@@ -360,6 +370,8 @@ function signupPage() {
             ${field("Finance email", company.email)}
             ${field("Default currency", "GEL", "select")}
             ${field("Receipt required above", "40 GEL")}
+            ${field(ka ? "მუდმივი სამუშაო ადგილის მისამართი" : "Permanent workplace address", company.workplace)}
+            ${field(ka ? "სამუშაო ადგილის GPS კოორდინატები" : "Workplace GPS coordinates", company.workplaceCoords)}
           </div>
           <br><button class="btn primary" onclick="state.signupCreated=true;render()">${ka ? "კომპანიის ანგარიშის შექმნა" : "Create company account"}</button>
         </section>
@@ -407,6 +419,7 @@ const links = [
   ["missionForms", "Mission Forms", "#/dashboard/mission-forms"],
   ["payments", "Wallet & Cards", "#/dashboard/payments"],
   ["policies", "Travel Policies", "#/dashboard/policies"],
+  ["legal", "Legal Rules", "#/dashboard/legal"],
   ["budgets", "Budgets", "#/dashboard/budgets"],
   ["trips", "Business Trips", "#/dashboard/trips"],
   ["employees", "Employees", "#/dashboard/employees"],
@@ -432,7 +445,7 @@ function shell(active, content) {
 }
 
 function sideIcon(label) {
-  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
+  const map = { Overview: "⌂", "Mission Forms": "✎", "Wallet & Cards": "◈", "Travel Policies": "◇", "Legal Rules": "§", Budgets: "▣", "Business Trips": "▤", Employees: "◎", Expenses: "≡", Receipts: "□", Reports: "↧", Settings: "⚙", "Future Modules": "+" };
   return map[label] || "•";
 }
 
@@ -517,7 +530,7 @@ function policiesPage() {
         <h3>${ka ? "გეოლოკაციის აქტივაცია" : "Geolocation activation"}</h3>
         <div class="geo-banner">
           <strong>${ka ? "მივლინება აქტიურია" : "Business trip active"}</strong>
-          <span>${ka ? "თანამშრომელი ოფისიდან 18.4კმ-ზეა. პოლიტიკის ზღვარი: 12კმ." : "Employee is 18.4 km from office. Policy threshold: 12 km."}</span>
+          <span>${ka ? "თანამშრომელი ოფისიდან 18.4კმ-ზეა. კომპანიის activation ზღვარი: 12კმ. კანონის 30კმ წესი ცალკე მოწმდება." : "Employee is 18.4 km from office. Company activation threshold: 12 km. The legal 30 km rule is checked separately."}</span>
         </div>
         <div class="map-mock"><span class="route-line"></span><span class="pin office"></span><span class="pin dest"></span></div>
       </section>
@@ -525,6 +538,8 @@ function policiesPage() {
         <h3>${ka ? "წესები და ლიმიტები" : "Rules and limits"}</h3>
         <div class="form-grid">
           ${field(ka ? "მინ. მანძილი მივლინების აქტივაციისთვის" : "Minimum distance for trip activation", "12 km")}
+          ${field(ka ? "კანონის 30კმ წესი" : "Legal 30 km rule", "30 km", "select")}
+          ${field(ka ? "ქვეყნის შიგნით დღიური ნორმა" : "Domestic daily allowance", `${legalRules.domesticDailyAllowance} GEL`)}
           ${field(ka ? "დღიური ლიმიტი" : "Daily limit", "500 GEL")}
           ${field(ka ? "სასტუმროს ლიმიტი" : "Hotel limit", "250 GEL")}
           ${field(ka ? "საკვების ლიმიტი" : "Meals limit", "70 GEL")}
@@ -535,6 +550,38 @@ function policiesPage() {
         </div>
       </section>
     </div>`);
+}
+
+function legalRulesPage() {
+  const ka = isKa();
+  return shell("legal", `${title(ka ? "საქართველოს მივლინების წესები" : "Georgian travel expense rules", ka ? "ეს ეკრანი prototype-ში აჩვენებს, როგორ ითვალისწინებს perDM კანონით განსაზღვრულ მანძილს, დღიურ ნორმას და დოკუმენტაციას." : "This screen shows how perDM can reflect law-defined distance, daily allowance, and documentation rules in the prototype.")}
+    <div class="stats">
+      ${stat(ka ? "მუდმივი სამუშაო ადგილი" : "Permanent workplace", company.workplace, company.workplaceCoords)}
+      ${stat(ka ? "ქვეყნის შიგნით დღიური ნორმა" : "Domestic daily allowance", `${legalRules.domesticDailyAllowance} GEL`, ka ? "ფაქტობრივად ყოფნის დღეებით" : "By actual trip days")}
+      ${stat(ka ? "30კმ-მდე წესი" : "Under 30 km rule", "30 km", ka ? "იმავე დღეს დაბრუნებისას მხოლოდ მგზავრობა" : "Same-day return: travel costs only")}
+      ${stat(ka ? "გრძელვადიანი საზღვარგარეთ" : "Long-term abroad", `${legalRules.longTermDays}+ days`, ka ? "30 დღის შემდეგ სხვა ნორმა" : "Different rate after 30 days")}
+    </div>
+    <div class="dash-grid">
+      <section class="panel">
+        <h3>${ka ? "მანძილის საფუძველზე კლასიფიკაცია" : "Distance-based classification"}</h3>
+        ${legalRow(ka ? "18.4კმ ოფისიდან" : "18.4 km from office", ka ? "კომპანიის 12კმ წესით აქტიურია, მაგრამ 30კმ-მდე შემთხვევაში დღიური ნორმა არ ჩანს; დოკუმენტირდება მგზავრობის ხარჯი." : "Active by the company 12 km rule, but under the 30 km legal rule daily allowance is not shown; travel cost is documented.")}
+        ${legalRow(ka ? "42კმ ოფისიდან" : "42 km from office", ka ? "ქვეყნის შიგნით მივლინებად კლასიფიცირდება და დღიური 30 GEL ნორმა შეიძლება დაითვალოს დღეების მიხედვით." : "Classifies as a domestic business trip and a 30 GEL daily allowance can be calculated by trip days.")}
+        ${legalRow(ka ? "საზღვარგარეთ 30 დღეზე მეტი" : "Abroad for more than 30 days", ka ? "პირველი 30 დღე მოკლევადიანი ნორმით, შემდეგ გრძელვადიანი წესით." : "First 30 days use short-term rates, then long-term rules apply.")}
+      </section>
+      <section class="panel">
+        <h3>${ka ? "დოკუმენტაციის შემოწმება" : "Documentation checks"}</h3>
+        ${legalRow(ka ? "მგზავრობის ხარჯი" : "Travel cost", ka ? "ანაზღაურდება ფაქტობრივად გაწეული ხარჯის დამადასტურებელი საბუთით." : "Reimbursed based on actual cost with supporting documents.")}
+        ${legalRow(ka ? "ბინის/სასტუმროს ხარჯი" : "Lodging cost", ka ? "დამადასტურებელი საბუთის წარმოდგენა საჭიროა." : "Supporting document is required.")}
+        ${legalRow(ka ? "მივლინების ფორმა" : "Business trip form", ka ? "თანამშრომლის ხელმოწერა და დამსაქმებლის/მიმღები მხარის დადასტურებები ინახება." : "Employee signature plus employer/host confirmations are stored.")}
+      </section>
+    </div>
+    <section class="panel" style="margin-top:16px">
+      <p class="section-lead">${ka ? "შენიშვნა: ეს prototype აჩვენებს წესების სამუშაო ლოგიკას მოცემულ კანონმდებლობის ტექსტზე დაყრდნობით და არ არის იურიდიული დასკვნა." : "Note: this prototype demonstrates rule logic based on the provided legal text and is not legal advice."}</p>
+    </section>`);
+}
+
+function legalRow(title, text) {
+  return `<div class="legal-row"><strong>${title}</strong><p>${text}</p></div>`;
 }
 
 function budgetsPage() {
@@ -901,7 +948,7 @@ function employeeTrip() {
       </div>
       <div class="budget-box"><span>Remaining budget</span><strong>${money(t.budget - t.total)}</strong><small>${money(t.total)} spent</small></div>
     </section>
-    <div class="trip-banner"><span>${ka ? "მივლინება ავტომატურად აქტიურია: ოფისიდან 18.4კმ, ზღვარი 12კმ." : "Business trip automatically active: 18.4 km from office, threshold 12 km."}</span>${badge(ka ? "მოგზაურობა აქტიურია" : "Trip active")}</div>
+    <div class="trip-banner"><span>${ka ? "მივლინება ავტომატურად აქტიურია კომპანიის წესით: ოფისიდან 18.4კმ, activation ზღვარი 12კმ. კანონის 30კმ დღიური ნორმა ამ მაგალითში ჯერ არ ირთვება." : "Business trip automatically active by company policy: 18.4 km from office, activation threshold 12 km. The legal 30 km daily allowance rule is not triggered in this example."}</span>${badge(ka ? "მოგზაურობა აქტიურია" : "Trip active")}</div>
     <div class="dash-grid">
       <section class="panel">
         <h3>${ka ? "გეოლოკაციის სიმულაცია" : "Geolocation simulation"}</h3>
@@ -910,7 +957,8 @@ function employeeTrip() {
       <section class="panel">
         <h3>${ka ? "სტატუსის წესები" : "Status rules"}</h3>
         ${stat(ka ? "ოფისი" : "Office", "Tbilisi HQ", ka ? "საწყისი წერტილი" : "Start point")}
-        ${stat(ka ? "მიმდინარე მანძილი" : "Current distance", "18.4 km", ka ? "აქტიურდება 12კმ+" : "Activates at 12 km+")}
+        ${stat(ka ? "მიმდინარე მანძილი" : "Current distance", "18.4 km", ka ? "კომპანიის წესი: 12კმ+" : "Company rule: 12 km+")}
+        ${stat(ka ? "დღიური ნორმის წესი" : "Daily allowance rule", "30 km", ka ? "30კმ-მდე მხოლოდ მგზავრობა" : "Under 30 km: travel only")}
         ${stat(ka ? "ქვითრები" : "Receipts", `${t.missing}`, ka ? "დარჩენილი ასატვირთი" : "Still required")}
       </section>
     </div>`;
@@ -1048,6 +1096,7 @@ function render() {
   if (hash === "#/dashboard/mission-forms") html = missionFormsPage();
   if (hash === "#/dashboard/payments") html = paymentsPage();
   if (hash === "#/dashboard/policies") html = policiesPage();
+  if (hash === "#/dashboard/legal") html = legalRulesPage();
   if (hash === "#/dashboard/budgets") html = budgetsPage();
   if (hash === "#/dashboard/trips") html = tripsPage();
   if (hash.startsWith("#/dashboard/trips/")) html = tripDetail();

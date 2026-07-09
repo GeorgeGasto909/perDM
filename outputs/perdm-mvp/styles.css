@@ -429,6 +429,18 @@ th { color: var(--muted); font-size: 12px; text-transform: uppercase; }
   margin-top: 5px;
   color: #226e60;
 }
+.legal-row {
+  border: 1px solid var(--line);
+  background: #fbfdff;
+  border-radius: 8px;
+  padding: 14px;
+  margin: 10px 0;
+}
+.legal-row p {
+  color: var(--muted);
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
 .action-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
 .trip-hero {
   display: flex;
